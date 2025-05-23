@@ -3,10 +3,6 @@
     margin: 0; /* Removes default browser margins from all elements */
     padding: 0; /* Removes default browser padding from all elements */
     box-sizing: border-box; /* Changes the CSS box model to include padding and border in the element's total width and height */
-    /* Enable hardware acceleration for smoother scrolling */
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000;
 }
 
 html, body { /* Selects the html and body elements */
