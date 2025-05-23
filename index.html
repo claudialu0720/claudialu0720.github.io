@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectural Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container - will be populated by JavaScript -->
+    <div id="portfolio-container" class="container">
+        <!-- Sections will be generated here -->
+    </div>
+
+    <!-- Templates for dynamic content generation -->
+    <template id="section-template">
+        <section class="portfolio-section" id="">
+            <div class="section-overlay"></div>
+            <div class="section-content">
+                <h2 class="section-title"></h2>
+                <!-- Projects will be added here -->
+            </div>
+        </section>
+    </template>
+
+    <!-- Template for project detail view -->
+    <template id="project-detail-template">
+        <div class="project-detail">
+            <div class="detail-header">
+                <h2 class="detail-section-title"></h2>
+                <button class="close-btn">[Close]</button>
+            </div>
+            <div class="detail-content-wrapper">
+                <div class="detail-content">
+                    <!-- Content will be loaded from project HTML -->
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Templates for different content section types -->
+    <template id="full-width-image-template">
+        <div class="full-width-image">
+            <img src="" alt="">
+        </div>
+    </template>
+
+    <template id="text-columns-template">
+        <div class="text-columns">
+            <!-- Columns will be added here -->
+        </div>
+    </template>
+
+    <template id="text-column-template">
+        <div class="col">
+            <h3></h3>
+            <p></p>
+        </div>
+    </template>
+
+    <template id="image-gallery-template">
+        <div class="image-gallery">
+            <!-- Gallery items will be added here -->
+        </div>
+    </template>
+
+    <template id="gallery-item-template">
+        <div class="gallery-item">
+            <img src="" alt="">
+        </div>
+    </template>
+
+    <template id="full-width-text-template">
+        <div class="full-width-text">
+            <h3></h3>
+            <p></p>
+        </div>
+    </template>
+
+    <!-- Load config and script -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+
+    <!-- Full-screen Image Gallery -->
+    <div id="fullscreen-gallery" class="fullscreen-gallery">
+        <span class="close-gallery-btn">&times;</span>
+        <span class="prev-gallery-btn">&#10094;</span>
+        <span class="next-gallery-btn">&#10095;</span>
+        <img id="fullscreen-image" src="" alt="Full-screen Image">
+    </div>
+</body>
+</html> 

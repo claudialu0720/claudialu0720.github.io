@@ -1,0 +1,515 @@
+/* Reset and Base Styles */
+* { /* Universal selector, applies to all elements */
+    margin: 0; /* Removes default browser margins from all elements */
+    padding: 0; /* Removes default browser padding from all elements */
+    box-sizing: border-box; /* Changes the CSS box model to include padding and border in the element's total width and height */
+}
+
+html, body { /* Selects the html and body elements */
+    height: 100%; /* Sets the height of html and body to 100% of the viewport height */
+    overflow: hidden; /* Hides any content that overflows the html and body elements, preventing scrollbars on the main page */
+}
+
+body { /* Selects the body element */
+    font-family: 'Albert Sans', sans-serif; /* Sets the default font for the page to 'Albert Sans', with a generic sans-serif fallback */
+    color: #333; /* Sets the default text color to a dark gray */
+    line-height: 1.6; /* Sets the default line height for text, providing spacing between lines */
+    background-color: #fff; /* Sets the default background color of the page to white */
+}
+
+img { /* Selects all image elements */
+    max-width: 100%; /* Ensures images do not exceed the width of their container, making them responsive */
+    height: auto; /* Maintains the aspect ratio of images when they are resized */
+    display: block; /* Makes images behave like block-level elements, allowing margins and preventing inline alignment issues */
+}
+
+hr { /* Styles for horizontal rule elements */
+    border: 0; /* Removes the default browser 3D border or other preset border styles */
+    border-top: 1px solid #e0e0e0; /* Sets a 1-pixel solid line at the top of the element, using the desired darker gray color */
+    margin: 10px 0 10px 0; /* Sets a 10-pixel margin at the bottom of the element */
+    /* The element will have an effective height of 1px due to this border-top. */
+    /* Margins are reset by the universal selector, so no explicit margin: 0; is needed here. */
+}
+
+/* Spacing for list items */
+ul li,
+ol li {
+    margin-bottom: 0.5em; /* Adds space below each list item, relative to its font size */
+}
+
+/* Container and Section Layout */
+.container { /* Selects elements with the class 'container' */
+    display: flex; /* Enables flexbox layout for direct children of the container */
+    height: 100vh; /* Sets the height of the container to 100% of the viewport height */
+    width: 100%; /* Sets the width of the container to 100% of its parent's width */
+    overflow: hidden; /* Hides any content that overflows the container */
+}
+
+.portfolio-section { /* Selects elements with the class 'portfolio-section' */
+    flex: 1; /* Allows the section to grow and shrink as needed within the flex container, taking up an equal share of available space */
+    height: 100%; /* Sets the height of the section to 100% of its parent's height (the container) */
+    overflow: hidden; /* Hides any content that overflows the section */
+    padding: 0; /* Removes any padding from the section */
+    position: relative; /* Sets the positioning context for absolutely positioned child elements */
+    transition: opacity 0.3s ease; /* Adds a smooth transition effect to the opacity property over 0.3 seconds with an ease timing function */
+    border-right: 1px solid #cccccc; /* Adds a 1-pixel solid light gray border to the right side of the section */
+}
+
+.portfolio-section:last-child { /* Selects the last 'portfolio-section' element among its siblings */
+    border-right: none; /* Removes the right border from the last section to avoid a double border or an unnecessary outer border */
+}
+
+/* Section overlay for inactive sections */
+.section-overlay { /* Selects elements with the class 'section-overlay' */
+    position: absolute; /* Positions the overlay relative to its nearest positioned ancestor (the .portfolio-section) */
+    top: 0; /* Aligns the top edge of the overlay with the top edge of its container */
+    left: 0; /* Aligns the left edge of the overlay with the left edge of its container */
+    width: 100%; /* Sets the width of the overlay to 100% of its container's width */
+    height: 100%; /* Sets the height of the overlay to 100% of its container's height */
+    background-color: rgba(255, 255, 255, 0.65); /* Sets the background color to a semi-transparent white */
+    backdrop-filter: blur(2px); /* Applies a blur effect to the area behind the overlay */
+    z-index: 9; /* Sets the stack order of the overlay, ensuring it's above some elements but potentially below others */
+    opacity: 0; /* Makes the overlay fully transparent by default */
+    pointer-events: none; /* Prevents the overlay from capturing mouse events when it's not active */
+    transition: all 0.4s ease; /* Adds a smooth transition effect to all animatable properties over 0.4 seconds with an ease timing function */
+}
+
+.section-overlay.active { /* Selects elements with both 'section-overlay' and 'active' classes */
+    opacity: 1; /* Makes the active overlay fully opaque */
+    pointer-events: auto; /* Allows the active overlay to capture mouse events */
+}
+
+/* Scrollable Content Area */
+.section-content { /* Selects elements with the class 'section-content' */
+    height: 100%; /* Sets the height of the content area to 100% of its parent's height (the .portfolio-section) */
+    overflow-y: auto; /* Allows vertical scrolling if the content exceeds the height of the element, but hides horizontal scrollbar */
+    padding: 0 10px 10px 10px; /* Sets padding: 0 for top, 10px for right, 10px for bottom, 10px for left */
+    color: #898989; /* Sets the default text color to light grey, matching .project-detail-content */
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox: Hides the scrollbar but allows scrolling */
+    -ms-overflow-style: none; /* IE and Edge: Hides the scrollbar but allows scrolling */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.section-content::-webkit-scrollbar { /* Targets the scrollbar of elements with class 'section-content' in WebKit-based browsers (Chrome, Safari) */
+    display: none; /* Hides the scrollbar */
+}
+
+/* Section Title */
+.section-title { /* Selects elements with the class 'section-title' */
+    font-weight: 300; /* Sets the font weight to 300 (light) */
+    font-size: 0.9rem; /* Sets the font size to 0.9 times the root em unit */
+    margin-bottom: 10px; /* Adds a 10-pixel margin below the element */
+    letter-spacing: 1px; /* Increases spacing between letters by 1 pixel */
+    text-transform: uppercase; /* Transforms the text to uppercase */
+    position: sticky; /* Makes the element sticky relative to its nearest scrolling ancestor and containing block */
+    top: 0; /* Sticks the element to the top of its container when scrolling */
+    background-color: rgba(255, 255, 255, 0.95); /* Sets a semi-transparent white background color */
+    padding: 8px 0px; /* Standardized padding: 8px top/bottom, 0px left/right */
+    z-index: 5; /* Sets the stack order, ensuring it's above elements with lower z-index */
+    border-bottom: 1px solid #f5f5f5; /* Added border for consistency: 1-pixel solid very light gray border at the bottom */
+    display: flex; /* For vertical centering of text: Enables flexbox layout for its children */
+    align-items: center; /* For vertical centering of text: Aligns flex items along the cross axis (vertically) */
+    height: 40px; /* Explicit height, adjust as needed: Sets a fixed height of 40 pixels */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height: Ensures padding and border don't add to the specified height */
+}
+
+/* Project Items (from project-preview HTML) */
+.project-item { /* Selects elements with the class 'project-item' */
+    margin-bottom: 30px; /* Adds a 30-pixel margin below the element */
+    border-bottom: 1px solid #e0e0e0; /* Changed to a slightly darker gray for more visual separation */
+    padding-bottom: 15px; /* Adds 15 pixels of padding to the bottom of the element */
+}
+
+.project-thumbnail { /* Selects elements with the class 'project-thumbnail' */
+    margin-bottom: 10px; /* Adds a 10-pixel margin below the element */
+    cursor: pointer; /* Changes the mouse cursor to a pointer (hand) on hover */
+    overflow: hidden; /* Hides any content that overflows the element, often used for rounded corners or image scaling effects */
+}
+
+.project-thumbnail img { /* Selects img elements that are descendants of 'project-thumbnail' */
+    transition: transform 0.3s ease; /* Adds a smooth transition to the transform property over 0.3 seconds with an ease timing function */
+    border: none; /* Removes any border from the image */
+}
+
+.project-thumbnail:hover img { /* Selects img elements inside a hovered 'project-thumbnail' */
+    transform: scale(1.02); /* Scales the image up by 2% on hover */
+}
+
+.project-brief { /* Selects elements with the class 'project-brief' */
+    display: flex; /* Enables flexbox layout for its direct children */
+}
+
+.brief-col { /* Selects elements with the class 'brief-col' */
+    flex: 1; /* Allows the column to grow and shrink as needed within the flex container */
+    padding-right: 5px; /* Adds 5 pixels of padding to the right side of the column */
+}
+
+.brief-col:last-child { /* Selects the last 'brief-col' element among its siblings */
+    padding-right: 0; /* Removes the right padding from the last column */
+}
+
+/* Modifier classes for 1:2 ratio in brief columns */
+.brief-col.brief-col-1of3 { /* Selects 'brief-col' elements that also have 'brief-col-1of3' */
+    flex-grow: 1; /* Allows this column to take 1 part of the available space */
+}
+
+.brief-col.brief-col-2of3 { /* Selects 'brief-col' elements that also have 'brief-col-2of3' */
+    flex-grow: 2; /* Allows this column to take 2 parts of the available space */
+}
+
+/* Let h3 in brief columns inherit body font styles,
+   keeping only a bottom margin for spacing.
+   Default browser styling will handle weight and relative size. */
+.brief-col h3 { /* Selects h3 elements that are descendants of 'brief-col' */
+    /* font-weight: 700; */ /* Removed to inherit or use browser default: Font weight was previously set to 700 (bold) */
+    margin-bottom: 5px;  /* Kept for spacing: Adds a 5-pixel margin below the h3 element */
+    /* font-size: 0.9rem; */ /* Removed to inherit or use browser default: Font size was previously 0.9rem */
+}
+
+/* Let p in brief columns inherit body font styles. */
+.brief-col p { /* Selects p elements that are descendants of 'brief-col' */
+    /* font-size: 0.9rem; */ /* Removed to inherit: Font size was previously 0.9rem */
+    margin-bottom: 3px; /* Kept for spacing: Adds a 3-pixel margin below the p element */
+    /* color: #666; */       /* Removed to inherit from body (#333): Text color was previously a medium gray */
+}
+
+/* Style for the "[More...]" link in project briefs */
+.project-more-link {
+    cursor: pointer; /* Changes the mouse cursor to a pointer (hand) on hover */
+    /* Optional: Add a distinct color if not inheriting the desired one */
+    /* color: #007bff; */ 
+}
+
+.project-more-link:hover {
+    text-decoration: underline; /* Adds an underline on hover */
+}
+
+/* Project Detail Styles */
+.project-detail { /* Selects elements with the class 'project-detail' */
+    position: absolute; /* Positions the element relative to its nearest positioned ancestor */
+    top: 0; /* Aligns the top edge of the element with the top edge of its container */
+    left: 0; /* Aligns the left edge of the element with the left edge of its container */
+    width: 100%; /* Sets the width of the element to 100% of its container's width */
+    height: 100%; /* Sets the height of the element to 100% of its container's height */
+    background-color: #fff; /* Sets the background color to white */
+    z-index: 10; /* Sets the stack order, ensuring it's above elements like the section overlay */
+    overflow: hidden; /* Hides any content that overflows the element */
+    display: none; /* Hides the element by default; it will be shown by adding an 'active' class via JavaScript */
+}
+
+.detail-header { /* Selects elements with the class 'detail-header' */
+    display: flex; /* Enables flexbox layout for its direct children */
+    justify-content: space-between; /* Distributes space between its children along the main axis (horizontally) */
+    align-items: center; /* Aligns its children along the cross axis (vertically) */
+    /* margin-bottom: 10px; Removed to eliminate gap: Previously had a 10px bottom margin */
+    position: sticky; /* Makes the element sticky relative to its nearest scrolling ancestor */
+    top: 0; /* Sticks the element to the top of its container when scrolling */
+    padding: 6px 10px; /* Adjusted padding: 6px top/bottom, 10px left/right */
+    background-color: rgba(255, 255, 255, 0.95); /* Sets a semi-transparent white background color */
+    z-index: 5; /* Sets the stack order */
+    border-bottom: 1px solid #f5f5f5; /* Adds a 1-pixel solid very light gray border at the bottom */
+    height: 40px; /* Reduced height: Sets a fixed height of 40 pixels (Note: README.md indicates 36px was the last known value here from user edit) */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+/* Style for the section title in the detail view */
+.detail-section-title { /* Selects elements with the class 'detail-section-title' */
+    font-weight: 300 !important; /* Sets font weight to 300 (light), using !important to override other potential styles */
+    font-size: 0.9rem; /* Sets font size to 0.9 times the root em unit */
+    letter-spacing: 1px; /* Increases spacing between letters by 1 pixel */
+    text-transform: uppercase; /* Transforms the text to uppercase */
+    margin: 0; /* Removes any margin around the element */
+    line-height: 1; /* Ensure it doesn't add extra height: Sets line height to 1 (no extra space between lines) */
+}
+
+.close-btn { /* Selects elements with the class 'close-btn' */
+    background: none; /* Removes any background styling from the button */
+    border: none; /* Removes any border from the button */
+    font-size: 0.9rem; /* Adjusted for text: Sets font size to 0.9rem */
+    cursor: pointer; /* Changes the mouse cursor to a pointer (hand) on hover */
+    color: #666; /* Sets the text color to a medium gray */
+    font-weight: 400; /* Restored for text button: Sets font weight to 400 (normal) */
+    padding: 0 0 0 10px; /* Padding for spacing from title: 0 top/right/bottom, 10px left */
+    font-family: 'Albert Sans', sans-serif; /* Ensure it uses the primary font: Sets font to 'Albert Sans' */
+    z-index: 6; /* Sets the stack order */
+    transition: color 0.2s ease; /* Adds a smooth transition to the color property over 0.2 seconds */
+    line-height: normal; /* Default line height for text: Allows browser to determine line height */
+}
+
+.close-btn:hover { /* Selects elements with class 'close-btn' when hovered */
+    color: #000; /* Changes text color to black on hover */
+}
+
+/* Removed .detail-header p as it appears to be unused */
+/*
+.detail-header p { // Selects p elements within 'detail-header'
+    color: #666; // Sets text color to medium gray
+    font-size: 0.9rem; // Sets font size to 0.9rem
+}
+*/
+
+.detail-content-wrapper { /* Selects elements with the class 'detail-content-wrapper' */
+    /* height: calc(100% - 32px); */ /* Old calculation based on approx header height: Previously calculated height based on 32px header */
+    height: calc(100% - 36px); /* New calculation: 100% - header height (36px) - header margin-bottom (10px) was removed, so this is now 100% - header height (40px in actual rule, check consistency) */
+    overflow-y: auto; /* Allows vertical scrolling if content exceeds height */
+    padding: 0 10px 10px 10px; /* Sets padding: 0 top, 10px right, 10px bottom, 10px left */
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox: Hides the scrollbar but allows scrolling */
+    -ms-overflow-style: none; /* IE and Edge: Hides the scrollbar but allows scrolling */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.detail-content-wrapper::-webkit-scrollbar { /* Targets the scrollbar of 'detail-content-wrapper' in WebKit browsers */
+    display: none; /* Hides the scrollbar */
+}
+
+/* Styles for the main content area of the project detail view */
+.project-detail-content {
+    color: #898989; /* Sets the default text color to a light grey */
+    /* Other styles for .project-detail-content can be added here if needed */
+}
+
+/* Styles for general images within project-detail-content */
+/* This applies to images directly in .project-detail-content or in its child elements, */
+/* unless overridden by more specific rules (like for .gallery-item img). */
+.project-detail-content img { /* Selects img elements within 'project-detail-content' */
+    width: 100%; /* Sets image width to 100% of its container */
+    /* margin-top: 10px; */ /* Commented out: Previously had a 10px top margin */
+    margin-bottom: 10px; /* Adds a 10-pixel margin below the image */
+    margin-top: 10px; /* Adds 10-pixel margin above the image */
+    border: none; /* Removes any border from the image */
+    cursor: zoom-in; /* For clickable gallery functionality: Changes cursor to zoom-in icon on hover */
+    height: auto; /* Maintain aspect ratio: Allows height to adjust automatically based on width */
+    object-fit: contain; /* Ensure whole image is visible, doesn't crop: Scales image to fit within content box, maintaining aspect ratio */
+    display: block; /* Ensure it behaves as a block element for margins: Makes image a block-level element */
+}
+
+/* Content section styles */
+.content-section { /* Selects elements with the class 'content-section' */
+    padding-top: 10px; /* Adds a 10-pixel padding at the top of the section */
+    margin-bottom: 30px; /* Adds a 30-pixel margin below the element */
+}
+
+/* Remove bottom margin from the last content section in the detail view */
+.detail-content-wrapper .content-section:last-child { /* Selects the last 'content-section' within 'detail-content-wrapper' */
+    margin-bottom: 0; /* Removes the bottom margin from this specific last section */
+}
+
+/* Columns section */
+.content-section.columns { /* Selects elements with both 'content-section' and 'columns' classes */
+    display: flex; /* Enables flexbox layout for its direct children (the columns) */
+}
+
+.content-section.columns .col { /* Selects elements with class 'col' that are descendants of '.content-section.columns' */
+    flex: 1; /* Allows the column to grow and shrink as needed within the flex container */
+    padding-right: 15px; /* Adds 15 pixels of padding to the right side of the column */
+}
+
+.content-section.columns .col:last-child { /* Selects the last 'col' element among its siblings within '.content-section.columns' */
+    padding-right: 0; /* Removes the right padding from the last column */
+}
+
+/* Modifier classes for 1:2 ratio in content section columns */
+.content-section.columns .col.col-1of3 {
+    flex-grow: 1; /* Allows this column to take 1 part of the available space */
+}
+
+.content-section.columns .col.col-2of3 {
+    flex-grow: 2; /* Allows this column to take 2 parts of the available space */
+}
+
+/* Let h3 in content sections inherit body font styles, 
+   keeping only a bottom margin for spacing. 
+   Default browser styling will handle weight and relative size. */
+.content-section h3 { /* Selects h3 elements that are descendants of 'content-section' */
+    /* font-weight: 700; */ /* Removed to inherit or use browser default: Previously set font weight to 700 */
+    margin-bottom: 10px; /* Kept for spacing, can be adjusted: Adds a 10-pixel margin below the h3 */
+    /* font-size: 0.9rem; */ /* Removed to inherit or use browser default: Previously set font size to 0.9rem */
+}
+
+/* Let p in content sections inherit body font styles. */
+.content-section p { /* Selects p elements that are descendants of 'content-section' */
+    /* font-size: 0.9rem; */ /* Removed to inherit: Previously set font size to 0.9rem */
+    /* color: #666; */       /* Removed to inherit from body (#333): Previously set color to medium gray */
+    /* font-family is inherited from body */ /* Confirms font-family is inherited */
+    /* Margins will be browser default, can add if needed */ /* Indicates margins are default unless specified */
+}
+
+/* Gallery section */
+.content-section.gallery { /* Selects elements with both 'content-section' and 'gallery' classes */
+    display: grid; /* Enables CSS Grid layout for its direct children */
+    grid-template-columns: repeat(2, 1fr); /* Creates a grid with 2 columns of equal fractional width */
+    grid-gap: 10px; /* Sets a 10-pixel gap between grid cells (both rows and columns) */
+}
+
+.gallery-item img { /* Selects img elements that are descendants of 'gallery-item' */
+    width: 100%; /* Sets image width to 100% of its container (the gallery item) */
+    height: 100%; /* Ensures image fills the gallery item cell: Sets image height to 100% of its container */
+    object-fit: cover; /* Covers the cell, may crop; good for uniform grid: Scales image to maintain aspect ratio while filling container, cropping if necessary */
+    border: none; /* Removes any border from the image */
+    cursor: zoom-in; /* Changes cursor to zoom-in icon on hover, indicating clickability for gallery */
+    margin: 0; /* Override general img margins for gallery items: Removes any margin around the image */
+}
+
+/* Full width text section */
+.content-section.full-width { /* Selects elements with both 'content-section' and 'full-width' classes */
+    width: 100%; /* Sets the width of the element to 100% of its parent */
+}
+
+/* Custom layout section */
+.content-section.custom .custom-layout { /* Selects elements with class 'custom-layout' descendant from '.content-section.custom' */
+    display: flex; /* Enables flexbox layout for its direct children */
+    gap: 20px; /* Sets a 20-pixel gap between flex items */
+}
+
+.custom-layout .left-col, /* Selects elements with class 'left-col' descendant from 'custom-layout' */
+.custom-layout .right-col { /* Selects elements with class 'right-col' descendant from 'custom-layout' */
+    flex: 1; /* Allows these columns to grow and shrink as needed within the flex container */
+}
+
+/* Blockquote styling */
+blockquote { /* Selects all blockquote elements */
+    font-style: italic; /* Sets the font style to italic */
+    border-left: 3px solid #f5f5f5; /* Adds a 3-pixel solid very light gray border to the left side */
+    padding-left: 15px; /* Adds 15 pixels of padding to the left side */
+    margin: 0; /* Removes any margin around the blockquote */
+    color: #666; /* Sets the text color to a medium gray */
+}
+
+blockquote footer { /* Selects footer elements that are descendants of blockquote */
+    margin-top: 5px; /* Adds a 5-pixel margin above the footer */
+    font-style: normal; /* Resets font style to normal (overriding italic from blockquote if needed) */
+    font-size: 0.85rem; /* Sets font size to 0.85 times the root em unit */
+}
+
+/* Stats boxes */
+.stat-box { /* Selects elements with the class 'stat-box' */
+    margin-bottom: 15px; /* Adds a 15-pixel margin below the element */
+    background: #f9f9f9; /* Sets background color to a very light gray */
+    padding: 10px; /* Adds 10 pixels of padding on all sides */
+}
+
+.stat { /* Selects elements with the class 'stat' */
+    font-size: 1.5rem; /* Sets font size to 1.5 times the root em unit */
+    font-weight: 300; /* Sets font weight to 300 (light) */
+}
+
+.stat-label { /* Selects elements with the class 'stat-label' */
+    font-size: 0.8rem; /* Sets font size to 0.8 times the root em unit */
+    color: #666; /* Sets text color to a medium gray */
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) { /* Applies the following styles when viewport width is 1200 pixels or less */
+    .container { /* Selects elements with class 'container' within this media query */
+        flex-direction: column; /* Changes flex direction to column (stacks children vertically) */
+        height: 100vh; /* Sets height to 100% of viewport height (redundant if already set, but ensures it) */
+        overflow: hidden; /* Hides overflow (redundant if already set, but ensures it) */
+    }
+    
+    .portfolio-section { /* Selects elements with class 'portfolio-section' within this media query */
+        height: 33.333%; /* Sets height to one-third of the parent container (for a 3-row layout) */
+        border-right: none; /* Removes the right border */
+    }
+    
+    .portfolio-section:last-child { /* Selects the last 'portfolio-section' within this media query */
+        border-bottom: none; /* Removes the bottom border (if sections are stacked, this might be for the overall last one) */
+    }
+    
+    .project-detail { /* Selects elements with class 'project-detail' within this media query */
+        position: fixed; /* Positions the element relative to the viewport */
+        top: 0; /* Aligns top edge with viewport top */
+        left: 0; /* Aligns left edge with viewport left */
+        width: 100%; /* Sets width to 100% of viewport */
+        height: 100%; /* Sets height to 100% of viewport (making it full screen) */
+    }
+    
+    .content-section.custom .custom-layout { /* Selects '.custom-layout' within '.content-section.custom' in this media query */
+        flex-direction: column; /* Stacks children of 'custom-layout' vertically */
+    }
+}
+
+@media (max-width: 768px) { /* Applies the following styles when viewport width is 768 pixels or less */
+    .project-brief, /* Selects elements with class 'project-brief' */
+    .content-section.columns { /* Selects elements with both 'content-section' and 'columns' classes */
+        flex-direction: column; /* Stacks children of these elements vertically */
+    }
+    
+    .brief-col, /* Selects elements with class 'brief-col' */
+    .content-section.columns .col { /* Selects elements with class 'col' within '.content-section.columns' */
+        padding-right: 0; /* Removes right padding */
+        margin-bottom: 15px; /* Adds a 15-pixel margin below these elements */
+    }
+    
+    .content-section.gallery { /* Selects elements with both 'content-section' and 'gallery' classes */
+        grid-template-columns: 1fr; /* Changes gallery to a single column layout */
+    }
+}
+
+/* Active States */
+.project-detail.active { /* Selects elements with both 'project-detail' and 'active' classes */
+    display: block; /* Makes the element visible (overriding display: none) */
+}
+
+/* Full-screen Image Gallery Styles */
+.fullscreen-gallery { /* Selects elements with class 'fullscreen-gallery' */
+    position: fixed; /* Positions the element relative to the viewport */
+    top: 0; /* Aligns top edge with viewport top */
+    left: 0; /* Aligns left edge with viewport left */
+    width: 100%; /* Sets width to 100% of viewport */
+    height: 100%; /* Sets height to 100% of viewport */
+    background-color: rgba(0, 0, 0, 0.9); /* Sets background to a semi-transparent black */
+    display: none; /* Hidden by default: Makes the element hidden by default */
+    justify-content: center; /* Centers flex items along the main axis (horizontally) */
+    align-items: center; /* Centers flex items along the cross axis (vertically) */
+    z-index: 1000; /* Ensure it's above everything: Sets a high stack order */
+}
+
+.fullscreen-gallery.active { /* Selects elements with both 'fullscreen-gallery' and 'active' classes */
+    display: flex; /* Show when active: Makes the element visible and uses flexbox for centering content */
+}
+
+#fullscreen-image { /* Selects the element with ID 'fullscreen-image' */
+    max-width: 90%; /* Sets maximum width to 90% of its container */
+    max-height: 90%; /* Sets maximum height to 90% of its container */
+    object-fit: contain; /* Scales image to fit within content box, maintaining aspect ratio */
+}
+
+.close-gallery-btn, /* Selects elements with class 'close-gallery-btn' */
+.prev-gallery-btn, /* Selects elements with class 'prev-gallery-btn' */
+.next-gallery-btn { /* Selects elements with class 'next-gallery-btn' */
+    position: absolute; /* Positions these buttons relative to their nearest positioned ancestor (the gallery) */
+    cursor: pointer; /* Changes mouse cursor to pointer on hover */
+    color: white; /* Sets text/icon color to white */
+    font-size: 30px; /* Sets font size to 30 pixels (for icons) */
+    user-select: none; /* Prevents text selection of these buttons */
+}
+
+.close-gallery-btn { /* Selects elements with class 'close-gallery-btn' */
+    top: 20px; /* Positions 20 pixels from the top of the gallery */
+    right: 30px; /* Positions 30 pixels from the right of the gallery */
+    font-size: 40px; /* Sets font size to 40 pixels (for a larger close icon) */
+}
+
+.prev-gallery-btn, /* Selects elements with class 'prev-gallery-btn' */
+.next-gallery-btn { /* Selects elements with class 'next-gallery-btn' */
+    top: 50%; /* Positions top edge at 50% of the gallery height */
+    transform: translateY(-50%); /* Vertically centers the button by shifting it up by 50% of its own height */
+    padding: 16px; /* Adds 16 pixels of padding on all sides */
+    background-color: rgba(0,0,0,0.3); /* Sets a semi-transparent black background */
+}
+
+.prev-gallery-btn { /* Selects elements with class 'prev-gallery-btn' */
+    left: 20px; /* Positions 20 pixels from the left of the gallery */
+}
+
+.next-gallery-btn { /* Selects elements with class 'next-gallery-btn' */
+    right: 20px; /* Positions 20 pixels from the right of the gallery */
+}
+
+.prev-gallery-btn:hover, /* Selects hovered 'prev-gallery-btn' */
+.next-gallery-btn:hover, /* Selects hovered 'next-gallery-btn' */
+.close-gallery-btn:hover { /* Selects hovered 'close-gallery-btn' */
+    color: #bbb; /* Changes color to a light gray on hover */
+} 
