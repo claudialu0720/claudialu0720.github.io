@@ -14,7 +14,7 @@ const portfolioConfig = {
         },
         {
             id: "contact",
-            title: "Contact",
+            title: "About",
             directory: "projects/contact"
         }
     ]
