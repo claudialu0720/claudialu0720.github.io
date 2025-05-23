@@ -43,12 +43,6 @@ ol li {
     height: 100vh; /* Sets the height of the container to 100% of the viewport height */
     width: 100%; /* Sets the width of the container to 100% of its parent's width */
     overflow: hidden; /* Hides any content that overflows the container */
-    opacity: 0; /* Initially hide the container for fade-in effect */
-    transition: opacity 0.5s ease-in-out; /* Smooth transition for fade-in */
-}
-
-.container.loaded { /* Class to be added by JS when ready */
-    opacity: 1; /* Make container visible */
 }
 
 .portfolio-section { /* Selects elements with the class 'portfolio-section' */
@@ -136,9 +130,6 @@ ol li {
 .project-thumbnail img { /* Selects img elements that are descendants of 'project-thumbnail' */
     transition: transform 0.3s ease; /* Adds a smooth transition to the transform property over 0.3 seconds with an ease timing function */
     border: none; /* Removes any border from the image */
-    width: 100%; /* Ensure image tries to fill container width for aspect ratio */
-    aspect-ratio: 4 / 3; /* Standard 4:3 aspect ratio for thumbnails, adjust if needed */
-    object-fit: cover; /* Cover the area, may crop, good for uniform look */
 }
 
 .project-thumbnail:hover img { /* Selects img elements inside a hovered 'project-thumbnail' */
