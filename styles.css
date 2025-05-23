@@ -25,19 +25,27 @@ body { /* Selects the body element */
 }
 
 img { /* Selects all image elements */
-    max-width: 100%; /* Ensures images do not exceed the width of their container, making them responsive */
-    height: auto; /* Maintains the aspect ratio of images when they are resized */
-    display: block; /* Makes images behave like block-level elements, allowing margins and preventing inline alignment issues */
-    /* Optimize images for better performance */
-    loading: lazy;
-    /* Optimize decoding */
-    decoding: async;
+    /* Prevent layout shift and full-screen flash - but preserve natural sizing */
+    max-width: 100%; /* Ensures images never exceed container width */
+    height: auto; /* Maintains aspect ratio */
+    display: block; /* Makes images behave like block-level elements */
+    box-sizing: border-box; /* Include padding and border in calculations */
+    
+    /* Performance optimizations */
+    loading: lazy; /* Native lazy loading as fallback */
+    decoding: async; /* Optimize decoding */
+    image-rendering: -webkit-optimize-contrast; /* Optimize rendering */
+    image-rendering: crisp-edges;
+    
     /* Prevent dragging to improve interaction */
     -webkit-user-drag: none;
     -khtml-user-drag: none;
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
+    
+    /* Smooth transitions */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 hr { /* Styles for horizontal rule elements */
@@ -145,17 +153,22 @@ ol li {
 .project-thumbnail { /* Selects elements with the class 'project-thumbnail' */
     margin-bottom: 10px; /* Adds a 10-pixel margin below the element */
     cursor: pointer; /* Changes the mouse cursor to a pointer (hand) on hover */
-    overflow: hidden; /* Hides any content that overflows the element, often used for rounded corners or image scaling effects */
-    /* Reserve space for thumbnail images */
+    overflow: hidden; /* Hides any content that overflows the element - CRITICAL for preventing full-screen flash */
+    /* Reserve space for thumbnail images and prevent layout shift */
     min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f8f8f8;
+    /* Ensure images can't break out of this container */
+    position: relative;
 }
 
 .project-thumbnail img { /* Selects img elements that are descendants of 'project-thumbnail' */
-    transition: transform 0.3s ease; /* Adds a smooth transition to the transform property over 0.3 seconds with an ease timing function */
+    /* Restore original image sizing - let images maintain their natural proportions */
+    max-width: 100%; /* Only prevent overflow, don't force dimensions */
+    height: auto; /* Let height be natural */
+    transition: transform 0.3s ease; /* Smooth hover effect */
     border: none; /* Removes any border from the image */
 }
 
@@ -305,15 +318,17 @@ ol li {
 /* This applies to images directly in .project-detail-content or in its child elements, */
 /* unless overridden by more specific rules (like for .gallery-item img). */
 .project-detail-content img { /* Selects img elements within 'project-detail-content' */
+    /* Maintain original responsive behavior */
     width: 100%; /* Sets image width to 100% of its container */
-    /* margin-top: 10px; */ /* Commented out: Previously had a 10px top margin */
+    max-width: 100%; /* Prevent overflow */
+    height: auto; /* Maintain aspect ratio */
     margin-bottom: 10px; /* Adds a 10-pixel margin below the image */
     margin-top: 10px; /* Adds 10-pixel margin above the image */
     border: none; /* Removes any border from the image */
-    cursor: zoom-in; /* For clickable gallery functionality: Changes cursor to zoom-in icon on hover */
-    height: auto; /* Maintain aspect ratio: Allows height to adjust automatically based on width */
-    object-fit: contain; /* Ensure whole image is visible, doesn't crop: Scales image to fit within content box, maintaining aspect ratio */
-    display: block; /* Ensure it behaves as a block element for margins: Makes image a block-level element */
+    cursor: zoom-in; /* For clickable gallery functionality */
+    object-fit: contain; /* Ensure whole image is visible, doesn't crop */
+    display: block; /* Ensure it behaves as a block element for margins */
+    box-sizing: border-box; /* Include padding and border in size calculations */
 }
 
 /* Content section styles */
@@ -375,18 +390,27 @@ ol li {
 }
 
 .gallery-item img { /* Selects img elements that are descendants of 'gallery-item' */
-    width: 100%; /* Sets image width to 100% of its container (the gallery item) */
-    height: 100%; /* Ensures image fills the gallery item cell: Sets image height to 100% of its container */
-    object-fit: cover; /* Covers the cell, may crop; good for uniform grid: Scales image to maintain aspect ratio while filling container, cropping if necessary */
+    /* Force images to fit within gallery container */
+    width: 100% !important; /* Sets image width to 100% of its container */
+    height: 100% !important; /* Ensures image fills the gallery item cell */
+    max-width: 100% !important; /* Prevent overflow */
+    max-height: 100% !important; /* Prevent overflow */
+    object-fit: cover; /* Covers the cell, may crop; good for uniform grid */
     border: none; /* Removes any border from the image */
     cursor: zoom-in; /* Changes cursor to zoom-in icon on hover, indicating clickability for gallery */
-    margin: 0; /* Override general img margins for gallery items: Removes any margin around the image */
-    /* Reserve space for gallery images */
+    margin: 0; /* Override general img margins for gallery items */
+    /* Reserve space for gallery images and prevent layout shift */
     min-height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f8f8f8;
+}
+
+/* Ensure gallery item containers also have proper constraints */
+.gallery-item {
+    overflow: hidden; /* Prevent images from breaking out */
+    position: relative; /* Create containing block for images */
 }
 
 /* Full width text section */
@@ -592,38 +616,41 @@ img {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     
-    /* Prevent layout shift during loading */
-    max-width: 100%;
-    height: auto;
+    /* Prevent layout shift during loading - CRITICAL for preventing full-screen flash */
+    max-width: 100% !important;
+    height: auto !important;
+    
+    /* Ensure images never exceed their container bounds */
+    box-sizing: border-box;
     
     /* Smooth transition when images load */
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Loading states for different contexts */
+/* Loading states for different contexts - minimal constraints */
 .project-thumbnail img.lazy-loading {
-    min-height: 200px;
+    min-height: 150px; /* Reduced to be less restrictive */
     background-color: #f5f5f5;
 }
 
 .gallery-item img.lazy-loading {
-    min-height: 150px;
+    min-height: 100px; /* Reduced to be less restrictive */
     background-color: #f5f5f5;
 }
 
 .full-width-image img.lazy-loading {
-    min-height: 300px;
+    min-height: 200px; /* Keep higher for full-width images */
     background-color: #f5f5f5;
 }
 
 /* Optimize for better performance on mobile */
 @media (max-width: 768px) {
     img.lazy-loading {
-        min-height: 150px;
+        min-height: 100px; /* Reduced from 150px */
     }
     
     .project-thumbnail img.lazy-loading {
-        min-height: 120px;
+        min-height: 100px; /* Reduced from 120px */
     }
 }
 

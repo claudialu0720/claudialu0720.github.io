@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Get critical images that should be preloaded (first few thumbnails)
+     * Get critical images that should be preloaded (only the first thumbnail)
      * @param {HTMLElement} container - Container to search for critical images
      * @returns {Array} Array of critical image sources
      */
@@ -109,22 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get thumbnail images that have immediate src (not lazy loaded)
         const immediateImages = container.querySelectorAll('.project-thumbnail img[src]:not([data-src])');
         
-        // Also get first few project thumbnail images
-        const allThumbnails = container.querySelectorAll('.project-thumbnail img');
-        
-        // Collect sources from immediate loading images
-        immediateImages.forEach(img => {
-            if (img.src) {
-                criticalImages.push(img.src);
-            }
-        });
-        
-        // Also collect from first 3 thumbnails (whether immediate or lazy)
-        for (let i = 0; i < Math.min(3, allThumbnails.length); i++) {
-            const img = allThumbnails[i];
-            const src = img.dataset.src || img.src;
-            if (src && !criticalImages.includes(src)) {
-                criticalImages.push(src);
+        // Only collect the FIRST immediate thumbnail image
+        if (immediateImages.length > 0) {
+            const firstThumbnail = immediateImages[0];
+            if (firstThumbnail.src) {
+                criticalImages.push(firstThumbnail.src);
             }
         }
         
@@ -145,6 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         logPerformance('Sections rendered');
         
+        // Audit images after all sections are loaded
+        auditImageLoading('after all sections loaded');
+        
         // Preload critical images for better perceived performance
         const criticalImages = getCriticalImages(container);
         preloadCriticalImages(criticalImages);
@@ -155,6 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add event listeners for project thumbnails
         addEventListeners();
+        
+        // Final audit
+        setTimeout(() => {
+            auditImageLoading('final audit after initialization');
+        }, 100);
         
         logPerformance('Portfolio initialization complete');
     }
@@ -167,9 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get the section template
         const sectionTemplate = document.getElementById('section-template');
         
+        // Create array to hold all section loading promises
+        const sectionPromises = [];
+        
         // For each section in the config
         for (const sectionData of portfolioConfig.sections) {
-            logPerformance(`Rendering section: ${sectionData.title}`);
+            logPerformance(`Starting section: ${sectionData.title}`);
             
             // Clone the section template
             const sectionElement = sectionTemplate.content.cloneNode(true).querySelector('.portfolio-section');
@@ -180,17 +180,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // Set section title
             sectionElement.querySelector('.section-title').textContent = sectionData.title;
             
-            // Add the section to the container
+            // Add the section to the container immediately
             container.appendChild(sectionElement);
             
             // Get the section content element
             const sectionContentElement = sectionElement.querySelector('.section-content');
             
-            // Load projects for this section
-            await loadProjects(sectionContentElement, sectionData.directory);
+            // Create promise for loading this section's projects (don't await here)
+            const sectionPromise = loadProjects(sectionContentElement, sectionData.directory)
+                .then(() => {
+                    logPerformance(`Section completed: ${sectionData.title}`);
+                })
+                .catch((error) => {
+                    console.error(`Error loading section ${sectionData.title}:`, error);
+                });
             
-            logPerformance(`Section completed: ${sectionData.title}`);
+            sectionPromises.push(sectionPromise);
         }
+        
+        // Wait for all sections to load in parallel
+        await Promise.all(sectionPromises);
+        logPerformance('All sections loaded in parallel');
     }
     
     /**
@@ -257,8 +267,15 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let html = await response.text();
             
+            // Count original images for comparison
+            const originalImageCount = (html.match(/<img[^>]*src=/gi) || []).length;
+            
             // Preprocess HTML to convert images for lazy loading BEFORE creating DOM
             html = preprocessHTMLForLazyLoading(html, false);
+            
+            // Count converted images
+            const lazyImageCount = (html.match(/<img[^>]*data-src=/gi) || []).length;
+            const immediateImageCount = (html.match(/<img[^>]*src=(?![^>]*data-src)/gi) || []).length;
             
             // Create a temporary element to parse the processed HTML
             const tempElement = document.createElement('div');
@@ -288,9 +305,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             logPerformance('Project loaded', {
                 filePath,
-                lazyImages: projectItem.querySelectorAll('img[data-src]').length,
-                immediateImages: projectItem.querySelectorAll('img[src]:not([data-src])').length
+                originalImages: originalImageCount,
+                lazyImages: lazyImageCount,
+                immediateImages: immediateImageCount,
+                actualLazyInDOM: projectItem.querySelectorAll('img[data-src]').length,
+                actualImmediateInDOM: projectItem.querySelectorAll('img[src]:not([data-src])').length
             });
+            
+            // Warn if too many immediate images
+            if (immediateImageCount > 1) {
+                console.warn(`⚠️ Project ${filePath} has ${immediateImageCount} immediate images (expected ≤1)`);
+            }
+            
         } catch (error) {
             console.error(`Error loading project: ${error}`);
         }
@@ -687,9 +713,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupLazyLoading(container) {
         const images = container.querySelectorAll('img[data-src]');
         images.forEach(img => {
-            // Add loading placeholder styling
+            // Add loading placeholder styling (minimal to prevent layout shift)
             img.style.backgroundColor = '#f0f0f0';
-            img.style.minHeight = '200px';
+            
+            // Set appropriate min-height based on context for placeholder
+            if (img.closest('.project-thumbnail')) {
+                img.style.minHeight = '150px'; // Reduced from 200px to be less restrictive
+            } else if (img.closest('.gallery-item')) {
+                img.style.minHeight = '100px'; // Reduced from 150px
+            } else {
+                img.style.minHeight = '50px'; // Reduced from 100px
+            }
+            
             if (!img.classList.contains('lazy-loading')) {
                 img.classList.add('lazy-loading');
             }
@@ -725,7 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return `<img${beforeSrc} data-src="${srcValue}"${classAttr}>`;
             });
         } else {
-            // For thumbnail content, convert images after the first 3 to lazy loading
+            // For homepage content, only load the FIRST image immediately, lazy load everything else
             let imageCount = 0;
             html = html.replace(/<img([^>]*)\ssrc=["']([^"']+)["']([^>]*)>/gi, (match, beforeSrc, srcValue, afterSrc) => {
                 imageCount++;
@@ -735,20 +770,99 @@ document.addEventListener('DOMContentLoaded', () => {
                     return match; // Don't modify if already has data-src
                 }
                 
-                // Keep first 3 images as immediate loading, convert rest to lazy loading
-                if (imageCount > 3) {
+                // Keep only the FIRST image as immediate loading, convert all others to lazy loading
+                if (imageCount > 1) { // Changed from 2 to 1
                     const classAttr = afterSrc.includes('class=') 
                         ? afterSrc.replace(/class=["']([^"']*)["']/i, 'class="$1 lazy-loading"')
                         : afterSrc + ' class="lazy-loading"';
                     return `<img${beforeSrc} data-src="${srcValue}"${classAttr}>`;
                 }
                 
-                return match; // Keep first 3 images unchanged
+                return match; // Keep only the first image unchanged
             });
         }
         
         return html;
     }
+
+    /**
+     * Audit all images on the page to see which are loading vs lazy
+     * @param {string} context - Context for the audit (e.g., "after page load")
+     */
+    function auditImageLoading(context = '') {
+        const allImages = document.querySelectorAll('img');
+        const immediateImages = document.querySelectorAll('img[src]:not([data-src])');
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        const loadingImages = document.querySelectorAll('img.lazy-loading');
+        
+        const audit = {
+            context,
+            totalImages: allImages.length,
+            immediateImages: immediateImages.length,
+            lazyImages: lazyImages.length,
+            loadingImages: loadingImages.length,
+            details: {
+                immediate: Array.from(immediateImages).map(img => ({
+                    src: img.src,
+                    context: img.closest('.project-thumbnail') ? 'thumbnail' : 
+                            img.closest('.project-detail-content') ? 'detail' : 
+                            img.closest('.gallery-item') ? 'gallery' : 'other',
+                    container: img.closest('.project-item')?.dataset?.projectFile || 'unknown'
+                })),
+                lazy: Array.from(lazyImages).map(img => ({
+                    dataSrc: img.dataset.src,
+                    context: img.closest('.project-thumbnail') ? 'thumbnail' : 
+                            img.closest('.project-detail-content') ? 'detail' : 
+                            img.closest('.gallery-item') ? 'gallery' : 'other'
+                }))
+            }
+        };
+        
+        logPerformance(`Image Audit - ${context}`, audit);
+        
+        if (window.location.search.includes('debug=true')) {
+            console.group(`🔍 Image Loading Audit - ${context}`);
+            console.log(`Total images: ${audit.totalImages}`);
+            console.log(`Immediate loading: ${audit.immediateImages} (should be ≤1)`);
+            console.log(`Lazy loading: ${audit.lazyImages}`);
+            
+            if (audit.immediateImages > 1) {
+                console.warn('⚠️ Too many images loading immediately! Expected only 1.');
+                console.table(audit.details.immediate);
+            }
+            
+            console.log('Immediate images by context:');
+            const byContext = audit.details.immediate.reduce((acc, img) => {
+                acc[img.context] = (acc[img.context] || 0) + 1;
+                return acc;
+            }, {});
+            console.table(byContext);
+            console.groupEnd();
+        }
+        
+        return audit;
+    }
+
+    // Make audit function available globally for debugging
+    window.auditImages = function() {
+        const audit = auditImageLoading('manual audit');
+        
+        console.log('\n📊 SUMMARY:');
+        console.log(`Total images on page: ${audit.totalImages}`);
+        console.log(`Loading immediately: ${audit.immediateImages} (👎 should be ≤1)`);
+        console.log(`Lazy loading: ${audit.lazyImages} (👍 good)`);
+        
+        if (audit.immediateImages > 1) {
+            console.log('\n⚠️ PROBLEM IMAGES:');
+            audit.details.immediate.forEach((img, i) => {
+                console.log(`${i+1}. ${img.context} - ${img.src}`);
+            });
+            
+            console.log('\n💡 SUGGESTION: Check why these images are not being converted to lazy loading');
+        }
+        
+        return audit;
+    };
 
     // Log initial page load
     logPerformance('Script initialized');
