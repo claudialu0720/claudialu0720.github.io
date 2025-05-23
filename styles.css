@@ -560,6 +560,20 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     .content-section.custom .custom-layout { /* Selects '.custom-layout' within '.content-section.custom' in this media query */
         flex-direction: column; /* Stacks children of 'custom-layout' vertically */
     }
+    
+    /* Fix mobile scrolling issue - add extra bottom padding for mobile browsers */
+    .detail-content-wrapper {
+        padding-bottom: 60px; /* Increased from 10px to account for mobile browser UI */
+    }
+    
+    .project-detail-content {
+        padding-bottom: 40px; /* Add bottom padding to ensure content is visible */
+    }
+    
+    /* Ensure last content section has some bottom margin on mobile */
+    .detail-content-wrapper .content-section:last-child {
+        margin-bottom: 30px; /* Restore bottom margin on mobile for better spacing */
+    }
 }
 
 /* Active States */
