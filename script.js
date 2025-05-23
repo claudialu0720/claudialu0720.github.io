@@ -11,18 +11,152 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevGalleryBtn = document.querySelector('.prev-gallery-btn');
     const nextGalleryBtn = document.querySelector('.next-gallery-btn');
     
+    // Intersection Observer for lazy loading images
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                // Load the actual image
+                loadImage(img);
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        // Start loading when image is 50px away from viewport
+        rootMargin: '50px',
+        threshold: 0.01
+    });
+
+    // Performance monitoring
+    const performanceMetrics = {
+        startTime: performance.now(),
+        imagesLoaded: 0,
+        totalImages: 0
+    };
+
+    /**
+     * Log performance metrics for debugging
+     * @param {string} event - The event name
+     * @param {Object} data - Additional data to log
+     */
+    function logPerformance(event, data = {}) {
+        if (window.location.search.includes('debug=true')) {
+            console.log(`🔍 Performance: ${event}`, {
+                timestamp: performance.now() - performanceMetrics.startTime,
+                ...data
+            });
+        }
+    }
+
+    /**
+     * Track image loading performance
+     * @param {HTMLImageElement} img - The image element
+     */
+    function trackImageLoad(img) {
+        performanceMetrics.totalImages++;
+        
+        const startTime = performance.now();
+        
+        const onLoad = () => {
+            performanceMetrics.imagesLoaded++;
+            const loadTime = performance.now() - startTime;
+            
+            logPerformance('Image loaded', {
+                src: img.src,
+                loadTime: `${loadTime.toFixed(2)}ms`,
+                loaded: performanceMetrics.imagesLoaded,
+                total: performanceMetrics.totalImages
+            });
+            
+            img.removeEventListener('load', onLoad);
+            img.removeEventListener('error', onError);
+        };
+        
+        const onError = () => {
+            logPerformance('Image failed to load', {
+                src: img.src || img.dataset.src
+            });
+            
+            img.removeEventListener('load', onLoad);
+            img.removeEventListener('error', onError);
+        };
+        
+        img.addEventListener('load', onLoad);
+        img.addEventListener('error', onError);
+    }
+
+    /**
+     * Preload critical images for better user experience
+     * @param {Array} imageSources - Array of image sources to preload
+     */
+    function preloadCriticalImages(imageSources) {
+        imageSources.forEach(src => {
+            if (src) {
+                const img = new Image();
+                img.src = src;
+            }
+        });
+    }
+
+    /**
+     * Get critical images that should be preloaded (first few thumbnails)
+     * @param {HTMLElement} container - Container to search for critical images
+     * @returns {Array} Array of critical image sources
+     */
+    function getCriticalImages(container) {
+        const criticalImages = [];
+        
+        // Get thumbnail images that have immediate src (not lazy loaded)
+        const immediateImages = container.querySelectorAll('.project-thumbnail img[src]:not([data-src])');
+        
+        // Also get first few project thumbnail images
+        const allThumbnails = container.querySelectorAll('.project-thumbnail img');
+        
+        // Collect sources from immediate loading images
+        immediateImages.forEach(img => {
+            if (img.src) {
+                criticalImages.push(img.src);
+            }
+        });
+        
+        // Also collect from first 3 thumbnails (whether immediate or lazy)
+        for (let i = 0; i < Math.min(3, allThumbnails.length); i++) {
+            const img = allThumbnails[i];
+            const src = img.dataset.src || img.src;
+            if (src && !criticalImages.includes(src)) {
+                criticalImages.push(src);
+            }
+        }
+        
+        return criticalImages;
+    }
+
     /**
      * Main function to initialize the portfolio
      */
     async function initPortfolio() {
+        logPerformance('Starting portfolio initialization');
+        
         // Get container
         const container = document.getElementById('portfolio-container');
         
         // Render all sections
         await renderSections(container);
         
+        logPerformance('Sections rendered');
+        
+        // Preload critical images for better perceived performance
+        const criticalImages = getCriticalImages(container);
+        preloadCriticalImages(criticalImages);
+        
+        logPerformance('Critical images preloaded', {
+            count: criticalImages.length
+        });
+        
         // Add event listeners for project thumbnails
         addEventListeners();
+        
+        logPerformance('Portfolio initialization complete');
     }
     
     /**
@@ -35,6 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // For each section in the config
         for (const sectionData of portfolioConfig.sections) {
+            logPerformance(`Rendering section: ${sectionData.title}`);
+            
             // Clone the section template
             const sectionElement = sectionTemplate.content.cloneNode(true).querySelector('.portfolio-section');
             
@@ -52,6 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Load projects for this section
             await loadProjects(sectionContentElement, sectionData.directory);
+            
+            logPerformance(`Section completed: ${sectionData.title}`);
         }
     }
     
@@ -117,9 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Failed to load ${filePath}`);
             }
             
-            const html = await response.text();
+            let html = await response.text();
             
-            // Create a temporary element to parse the HTML
+            // Preprocess HTML to convert images for lazy loading BEFORE creating DOM
+            html = preprocessHTMLForLazyLoading(html, false);
+            
+            // Create a temporary element to parse the processed HTML
             const tempElement = document.createElement('div');
             tempElement.innerHTML = html;
             
@@ -136,10 +277,20 @@ document.addEventListener('DOMContentLoaded', () => {
             projectItem.dataset.projectFile = filePath;
             
             // Add the preview content to the project item
-            projectItem.appendChild(projectPreview.cloneNode(true));
+            const clonedPreview = projectPreview.cloneNode(true);
+            projectItem.appendChild(clonedPreview);
+            
+            // Setup lazy loading for any data-src images that were created by preprocessing
+            setupLazyLoading(projectItem);
             
             // Add the project to the section content
             sectionContentElement.appendChild(projectItem);
+            
+            logPerformance('Project loaded', {
+                filePath,
+                lazyImages: projectItem.querySelectorAll('img[data-src]').length,
+                immediateImages: projectItem.querySelectorAll('img[src]:not([data-src])').length
+            });
         } catch (error) {
             console.error(`Error loading project: ${error}`);
         }
@@ -212,11 +363,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     /**
-     * Open project detail view
+     * Open project detail
      * @param {string} projectFilePath - Path to the project HTML file
-     * @param {HTMLElement} sectionElement - Section element
+     * @param {HTMLElement} sectionElement - The section element
      */
     async function openProjectDetail(projectFilePath, sectionElement) {
+        try {
+            logPerformance('Opening project detail', { projectFilePath });
+            
             // Fetch the project HTML file
             const response = await fetch(projectFilePath);
             
@@ -224,9 +378,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Failed to load ${projectFilePath}`);
             }
             
-            const html = await response.text();
+            let html = await response.text();
             
-            // Create a temporary element to parse the HTML
+            // Preprocess HTML to convert ALL detail images for lazy loading BEFORE creating DOM
+            html = preprocessHTMLForLazyLoading(html, true);
+            
+            // Create a temporary element to parse the processed HTML
             const tempElement = document.createElement('div');
             tempElement.innerHTML = html;
             
@@ -254,13 +411,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const clonedDetailContent = projectDetailContent.cloneNode(true);
             contentContainer.appendChild(clonedDetailContent);
 
+            // Setup lazy loading for the detail content (images were already preprocessed)
+            setupLazyLoading(clonedDetailContent);
+
             // Add event listeners to images within the detail content for the gallery
-            clonedDetailContent.querySelectorAll('img').forEach(img => {
-                img.addEventListener('click', () => {
-                    // Collect all images from this project's detail view
-                    const imagesInDetail = Array.from(clonedDetailContent.querySelectorAll('img')).map(i => i.src);
-                    openFullscreenGallery(imagesInDetail, img.src);
-                });
+            // Note: We'll need to handle this differently now since images may not be loaded yet
+            clonedDetailContent.addEventListener('click', (event) => {
+                if (event.target.tagName === 'IMG') {
+                    // Collect all images from this project's detail view (including lazy ones)
+                    const imagesInDetail = Array.from(clonedDetailContent.querySelectorAll('img')).map(img => {
+                        return img.dataset.src || img.src;
+                    }).filter(src => src); // Filter out empty sources
+                    
+                    const clickedImageSrc = event.target.dataset.src || event.target.src;
+                    openFullscreenGallery(imagesInDetail, clickedImageSrc);
+                }
             });
             
             // Add event listener to the close button
@@ -272,6 +437,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add the detail to the section
             sectionElement.appendChild(detailElement);
             
+            logPerformance('Project detail content processed', {
+                lazyImages: clonedDetailContent.querySelectorAll('img[data-src]').length,
+                immediateImages: clonedDetailContent.querySelectorAll('img[src]:not([data-src])').length
+            });
+            
             // Add active class to show it
             setTimeout(() => {
                 detailElement.classList.add('active');
@@ -281,7 +451,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Add click handlers to overlays to close the detail
                 addOverlayClickHandlers(sectionElement);
+                
+                logPerformance('Project detail opened');
             }, 10);
+        } catch (error) {
+            console.error(`Error opening project detail: ${error}`);
+        }
     }
     
     /**
@@ -459,4 +634,122 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    /**
+     * Load an image with lazy loading support
+     * @param {HTMLImageElement} img - The image element to load
+     */
+    function loadImage(img) {
+        return new Promise((resolve, reject) => {
+            const actualImg = new Image();
+            const startTime = performance.now();
+            
+            actualImg.onload = () => {
+                const loadTime = performance.now() - startTime;
+                
+                img.src = actualImg.src;
+                img.classList.remove('lazy-loading');
+                img.classList.add('loaded');
+                
+                logPerformance('Lazy image loaded', {
+                    src: actualImg.src,
+                    loadTime: `${loadTime.toFixed(2)}ms`
+                });
+                
+                resolve();
+            };
+            
+            actualImg.onerror = () => {
+                img.classList.remove('lazy-loading');
+                img.classList.add('error');
+                
+                logPerformance('Lazy image failed to load', {
+                    src: img.dataset.src || img.src
+                });
+                
+                reject(new Error(`Failed to load image: ${img.dataset.src || img.src}`));
+            };
+            
+            // Get the actual source from data-src attribute
+            const imageSrc = img.dataset.src || img.src;
+            if (imageSrc) {
+                actualImg.src = imageSrc;
+            } else {
+                reject(new Error('No image source found'));
+            }
+        });
+    }
+
+    /**
+     * Setup lazy loading for images
+     * @param {HTMLElement} container - Container element to search for images
+     */
+    function setupLazyLoading(container) {
+        const images = container.querySelectorAll('img[data-src]');
+        images.forEach(img => {
+            // Add loading placeholder styling
+            img.style.backgroundColor = '#f0f0f0';
+            img.style.minHeight = '200px';
+            if (!img.classList.contains('lazy-loading')) {
+                img.classList.add('lazy-loading');
+            }
+            
+            // Observe the image for intersection
+            imageObserver.observe(img);
+        });
+        
+        logPerformance('Lazy loading setup', {
+            lazyImages: images.length
+        });
+    }
+
+    /**
+     * Process HTML content to prepare images for lazy loading
+     * @param {string} html - The HTML string to process
+     * @param {boolean} isDetailContent - Whether this is detail content (more aggressive lazy loading)
+     * @returns {string} - The processed HTML string
+     */
+    function preprocessHTMLForLazyLoading(html, isDetailContent = false) {
+        // Process HTML string to convert img src to data-src before DOM creation
+        if (isDetailContent) {
+            // For detail content, convert ALL images to lazy loading
+            html = html.replace(/<img([^>]*)\ssrc=["']([^"']+)["']([^>]*)>/gi, (match, beforeSrc, srcValue, afterSrc) => {
+                // Check if this img already has data-src attribute
+                if (beforeSrc.includes('data-src') || afterSrc.includes('data-src')) {
+                    return match; // Don't modify if already has data-src
+                }
+                // Convert src to data-src and add lazy-loading class
+                const classAttr = afterSrc.includes('class=') 
+                    ? afterSrc.replace(/class=["']([^"']*)["']/i, 'class="$1 lazy-loading"')
+                    : afterSrc + ' class="lazy-loading"';
+                return `<img${beforeSrc} data-src="${srcValue}"${classAttr}>`;
+            });
+        } else {
+            // For thumbnail content, convert images after the first 3 to lazy loading
+            let imageCount = 0;
+            html = html.replace(/<img([^>]*)\ssrc=["']([^"']+)["']([^>]*)>/gi, (match, beforeSrc, srcValue, afterSrc) => {
+                imageCount++;
+                
+                // Check if this img already has data-src attribute
+                if (beforeSrc.includes('data-src') || afterSrc.includes('data-src')) {
+                    return match; // Don't modify if already has data-src
+                }
+                
+                // Keep first 3 images as immediate loading, convert rest to lazy loading
+                if (imageCount > 3) {
+                    const classAttr = afterSrc.includes('class=') 
+                        ? afterSrc.replace(/class=["']([^"']*)["']/i, 'class="$1 lazy-loading"')
+                        : afterSrc + ' class="lazy-loading"';
+                    return `<img${beforeSrc} data-src="${srcValue}"${classAttr}>`;
+                }
+                
+                return match; // Keep first 3 images unchanged
+            });
+        }
+        
+        return html;
+    }
+
+    // Log initial page load
+    logPerformance('Script initialized');
 }); 

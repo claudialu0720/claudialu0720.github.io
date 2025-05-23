@@ -3,11 +3,18 @@
     margin: 0; /* Removes default browser margins from all elements */
     padding: 0; /* Removes default browser padding from all elements */
     box-sizing: border-box; /* Changes the CSS box model to include padding and border in the element's total width and height */
+    /* Enable hardware acceleration for smoother scrolling */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
 }
 
 html, body { /* Selects the html and body elements */
     height: 100%; /* Sets the height of html and body to 100% of the viewport height */
     overflow: hidden; /* Hides any content that overflows the html and body elements, preventing scrollbars on the main page */
+    /* Optimize scrolling performance */
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
 }
 
 body { /* Selects the body element */
@@ -21,6 +28,16 @@ img { /* Selects all image elements */
     max-width: 100%; /* Ensures images do not exceed the width of their container, making them responsive */
     height: auto; /* Maintains the aspect ratio of images when they are resized */
     display: block; /* Makes images behave like block-level elements, allowing margins and preventing inline alignment issues */
+    /* Optimize images for better performance */
+    loading: lazy;
+    /* Optimize decoding */
+    decoding: async;
+    /* Prevent dragging to improve interaction */
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 }
 
 hr { /* Styles for horizontal rule elements */
@@ -53,6 +70,10 @@ ol li {
     position: relative; /* Sets the positioning context for absolutely positioned child elements */
     transition: opacity 0.3s ease; /* Adds a smooth transition effect to the opacity property over 0.3 seconds with an ease timing function */
     border-right: 1px solid #cccccc; /* Adds a 1-pixel solid light gray border to the right side of the section */
+    /* Use containment to improve rendering performance */
+    contain: layout style paint;
+    /* Enable hardware acceleration */
+    will-change: transform;
 }
 
 .portfolio-section:last-child { /* Selects the last 'portfolio-section' element among its siblings */
@@ -125,6 +146,12 @@ ol li {
     margin-bottom: 10px; /* Adds a 10-pixel margin below the element */
     cursor: pointer; /* Changes the mouse cursor to a pointer (hand) on hover */
     overflow: hidden; /* Hides any content that overflows the element, often used for rounded corners or image scaling effects */
+    /* Reserve space for thumbnail images */
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
 }
 
 .project-thumbnail img { /* Selects img elements that are descendants of 'project-thumbnail' */
@@ -196,6 +223,10 @@ ol li {
     z-index: 10; /* Sets the stack order, ensuring it's above elements like the section overlay */
     overflow: hidden; /* Hides any content that overflows the element */
     display: none; /* Hides the element by default; it will be shown by adding an 'active' class via JavaScript */
+    /* Optimize detail view rendering */
+    contain: layout style paint;
+    /* Use GPU compositing for animations */
+    transform: translate3d(0, 0, 0);
 }
 
 .detail-header { /* Selects elements with the class 'detail-header' */
@@ -350,6 +381,12 @@ ol li {
     border: none; /* Removes any border from the image */
     cursor: zoom-in; /* Changes cursor to zoom-in icon on hover, indicating clickability for gallery */
     margin: 0; /* Override general img margins for gallery items: Removes any margin around the image */
+    /* Reserve space for gallery images */
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
 }
 
 /* Full width text section */
@@ -512,4 +549,99 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
 .next-gallery-btn:hover, /* Selects hovered 'next-gallery-btn' */
 .close-gallery-btn:hover { /* Selects hovered 'close-gallery-btn' */
     color: #bbb; /* Changes color to a light gray on hover */
+}
+
+/* Lazy loading styles for better performance */
+img.lazy-loading {
+    background-color: #f0f0f0;
+    background-image: linear-gradient(
+        90deg,
+        #f0f0f0 0px,
+        #e0e0e0 40px,
+        #f0f0f0 80px
+    );
+    background-size: 300px;
+    animation: loading-shimmer 1.5s ease-in-out infinite;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+img.loaded {
+    opacity: 1;
+    animation: none;
+    background: none;
+}
+
+img.error {
+    background-color: #ffebee;
+    opacity: 0.5;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        background-position: -300px 0;
+    }
+    100% {
+        background-position: 300px 0;
+    }
+}
+
+/* Improve image loading performance */
+img {
+    /* Optimize image rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* Prevent layout shift during loading */
+    max-width: 100%;
+    height: auto;
+    
+    /* Smooth transition when images load */
+    transition: opacity 0.3s ease;
+}
+
+/* Loading states for different contexts */
+.project-thumbnail img.lazy-loading {
+    min-height: 200px;
+    background-color: #f5f5f5;
+}
+
+.gallery-item img.lazy-loading {
+    min-height: 150px;
+    background-color: #f5f5f5;
+}
+
+.full-width-image img.lazy-loading {
+    min-height: 300px;
+    background-color: #f5f5f5;
+}
+
+/* Optimize for better performance on mobile */
+@media (max-width: 768px) {
+    img.lazy-loading {
+        min-height: 150px;
+    }
+    
+    .project-thumbnail img.lazy-loading {
+        min-height: 120px;
+    }
+}
+
+/* Critical images that should load immediately */
+.project-thumbnail:nth-child(-n+3) img {
+    /* First 3 thumbnails load immediately */
+    loading: eager;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    img.lazy-loading {
+        animation: none;
+    }
 } 
