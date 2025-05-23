@@ -27,6 +27,94 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 0.01
     });
 
+    // Mobile navigation state
+    let currentMobileSection = 0; // Index of currently active mobile section
+    let isMobileView = false; // Track if we're in mobile view
+
+    /**
+     * Initialize mobile navigation
+     */
+    function initMobileNavigation() {
+        const mobileNav = document.getElementById('mobile-nav');
+        const mobileNavTabs = document.querySelector('.mobile-nav-tabs');
+        
+        // Clear existing tabs
+        mobileNavTabs.innerHTML = '';
+        
+        // Create tabs for each section
+        portfolioConfig.sections.forEach((section, index) => {
+            const tab = document.createElement('div');
+            tab.className = 'mobile-nav-tab';
+            tab.textContent = section.title;
+            tab.dataset.sectionIndex = index;
+            
+            // Set first tab as active by default
+            if (index === 0) {
+                tab.classList.add('active');
+            }
+            
+            // Add click handler
+            tab.addEventListener('click', () => switchMobileSection(index));
+            
+            mobileNavTabs.appendChild(tab);
+        });
+        
+        // Set initial active section
+        updateMobileSectionVisibility();
+    }
+
+    /**
+     * Switch to a different section on mobile
+     * @param {number} sectionIndex - Index of the section to switch to
+     */
+    function switchMobileSection(sectionIndex) {
+        // Update current section index
+        currentMobileSection = sectionIndex;
+        
+        // Update tab active states
+        const tabs = document.querySelectorAll('.mobile-nav-tab');
+        tabs.forEach((tab, index) => {
+            tab.classList.toggle('active', index === sectionIndex);
+        });
+        
+        // Update section visibility
+        updateMobileSectionVisibility();
+    }
+
+    /**
+     * Update which section is visible on mobile
+     */
+    function updateMobileSectionVisibility() {
+        const sections = document.querySelectorAll('.portfolio-section');
+        sections.forEach((section, index) => {
+            section.classList.toggle('mobile-active', index === currentMobileSection);
+        });
+    }
+
+    /**
+     * Check if we're in mobile view and update accordingly
+     */
+    function checkMobileView() {
+        const wasMobile = isMobileView;
+        isMobileView = window.innerWidth <= 1024;
+        
+        // If switching to/from mobile view, update section visibility
+        if (wasMobile !== isMobileView) {
+            if (isMobileView) {
+                updateMobileSectionVisibility();
+            } else {
+                // On desktop, show all sections
+                const sections = document.querySelectorAll('.portfolio-section');
+                sections.forEach(section => {
+                    section.classList.remove('mobile-active');
+                });
+            }
+        }
+    }
+
+    // Listen for window resize to handle mobile/desktop switches
+    window.addEventListener('resize', checkMobileView);
+
     /**
      * Main function to initialize the portfolio
      */
@@ -36,6 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Render all sections
         await renderSections(container);
+        
+        // Initialize mobile navigation
+        initMobileNavigation();
+        
+        // Check initial mobile view state
+        checkMobileView();
         
         // Add event listeners for project thumbnails
         addEventListeners();

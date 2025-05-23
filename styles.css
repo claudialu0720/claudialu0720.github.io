@@ -457,37 +457,81 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     color: #666; /* Sets text color to a medium gray */
 }
 
-/* Responsive Styles */
-@media (max-width: 1200px) { /* Applies the following styles when viewport width is 1200 pixels or less */
-    .container { /* Selects elements with class 'container' within this media query */
-        flex-direction: column; /* Changes flex direction to column (stacks children vertically) */
-        height: 100vh; /* Sets height to 100% of viewport height (redundant if already set, but ensures it) */
-        overflow: hidden; /* Hides overflow (redundant if already set, but ensures it) */
-    }
-    
-    .portfolio-section { /* Selects elements with class 'portfolio-section' within this media query */
-        height: 33.333%; /* Sets height to one-third of the parent container (for a 3-row layout) */
-        border-right: none; /* Removes the right border */
-    }
-    
-    .portfolio-section:last-child { /* Selects the last 'portfolio-section' within this media query */
-        border-bottom: none; /* Removes the bottom border (if sections are stacked, this might be for the overall last one) */
-    }
-    
-    .project-detail { /* Selects elements with class 'project-detail' within this media query */
-        position: fixed; /* Positions the element relative to the viewport */
-        top: 0; /* Aligns top edge with viewport top */
-        left: 0; /* Aligns left edge with viewport left */
-        width: 100%; /* Sets width to 100% of viewport */
-        height: 100%; /* Sets height to 100% of viewport (making it full screen) */
-    }
-    
-    .content-section.custom .custom-layout { /* Selects '.custom-layout' within '.content-section.custom' in this media query */
-        flex-direction: column; /* Stacks children of 'custom-layout' vertically */
-    }
+/* Mobile Navigation Bar */
+.mobile-nav {
+    display: none; /* Hidden by default on desktop */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-@media (max-width: 768px) { /* Applies the following styles when viewport width is 768 pixels or less */
+.mobile-nav-tabs {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.mobile-nav-tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.mobile-nav-tab.active {
+    color: #333;
+    border-bottom-color: #333;
+    font-weight: 500;
+}
+
+.mobile-nav-tab:hover {
+    color: #333;
+    background-color: rgba(0,0,0,0.03);
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) { /* Applies the following styles when viewport width is 1024 pixels or less */
+    /* Show mobile navigation */
+    .mobile-nav {
+        display: block;
+    }
+    
+    /* Adjust container to account for mobile nav */
+    .container {
+        margin-top: 50px; /* Space for mobile nav bar */
+        height: calc(100vh - 50px); /* Subtract nav height from viewport */
+    }
+    
+    /* Show only active section on mobile */
+    .portfolio-section {
+        height: 100%; /* Full height for active section */
+        display: none; /* Hide all sections by default */
+        border-right: none; /* Remove borders */
+        border-bottom: none;
+    }
+    
+    .portfolio-section.mobile-active {
+        display: block; /* Show only the active section */
+    }
+    
+    /* Other mobile styles */
     .project-brief, /* Selects elements with class 'project-brief' */
     .content-section.columns { /* Selects elements with both 'content-section' and 'columns' classes */
         flex-direction: column; /* Stacks children of these elements vertically */
@@ -501,6 +545,20 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     
     .content-section.gallery { /* Selects elements with both 'content-section' and 'gallery' classes */
         grid-template-columns: 1fr; /* Changes gallery to a single column layout */
+    }
+    
+    /* Full-screen project details on mobile */
+    .project-detail { /* Selects elements with class 'project-detail' within this media query */
+        position: fixed; /* Positions the element relative to the viewport */
+        top: 0; /* Aligns top edge with viewport top */
+        left: 0; /* Aligns left edge with viewport left */
+        width: 100%; /* Sets width to 100% of viewport */
+        height: 100%; /* Sets height to 100% of viewport (making it full screen) */
+    }
+    
+    /* Column layout for custom sections on mobile */
+    .content-section.custom .custom-layout { /* Selects '.custom-layout' within '.content-section.custom' in this media query */
+        flex-direction: column; /* Stacks children of 'custom-layout' vertically */
     }
 }
 
@@ -640,7 +698,7 @@ img {
 }
 
 /* Optimize for better performance on mobile */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     img.lazy-loading {
         min-height: 100px; /* Reduced from 150px */
     }
