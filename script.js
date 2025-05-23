@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add event listeners for project thumbnails
         addEventListeners();
+
+        // Fade in the container now that sections are structured
+        if (container) {
+            container.classList.add('loaded');
+        }
     }
     
     /**
@@ -135,8 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
             projectItem.className = 'project-item';
             projectItem.dataset.projectFile = filePath;
             
+            // Clone the preview content
+            const clonedPreview = projectPreview.cloneNode(true);
+
+            // Add loading="lazy" to all images in the preview
+            clonedPreview.querySelectorAll('img').forEach(img => {
+                img.setAttribute('loading', 'lazy');
+            });
+
             // Add the preview content to the project item
-            projectItem.appendChild(projectPreview.cloneNode(true));
+            projectItem.appendChild(clonedPreview);
             
             // Add the project to the section content
             sectionContentElement.appendChild(projectItem);
@@ -252,6 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Add the detail content to the container
             const clonedDetailContent = projectDetailContent.cloneNode(true);
+
+            // Add loading="lazy" to all images in the detail content
+            clonedDetailContent.querySelectorAll('img').forEach(img => {
+                img.setAttribute('loading', 'lazy');
+            });
+
             contentContainer.appendChild(clonedDetailContent);
 
             // Add event listeners to images within the detail content for the gallery
