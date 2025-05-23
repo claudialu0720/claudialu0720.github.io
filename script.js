@@ -440,6 +440,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {HTMLElement} activeSection - The active section element
      */
     function addOverlayToOtherSections(activeSection) {
+        // Skip overlays in mobile view since only one section is visible
+        if (isMobileView) {
+            return;
+        }
+        
         // Get all sections
         const allSections = document.querySelectorAll('.portfolio-section');
         
@@ -458,6 +463,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {HTMLElement} activeSection - The active section element 
      */
     function addOverlayClickHandlers(activeSection) {
+        // Skip overlay click handlers in mobile view since only one section is visible
+        if (isMobileView) {
+            return;
+        }
+        
         // Get all sections
         const allSections = document.querySelectorAll('.portfolio-section');
         
