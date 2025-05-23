@@ -473,26 +473,33 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
 .mobile-nav-tabs {
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    height: 50px;
+    align-items: stretch; /* Changed from center to stretch to allow tabs to take full height */
+    min-height: 50px; /* Changed from fixed height to min-height */
+    max-height: 70px; /* Added max-height to prevent excessive expansion */
     max-width: 100%;
     overflow-x: auto;
 }
 
 .mobile-nav-tab {
     flex: 1;
+    display: flex; /* Added flexbox for better text alignment */
+    align-items: center; /* Center text vertically within the tab */
+    justify-content: center; /* Center text horizontally */
     text-align: center;
-    padding: 12px 8px;
+    padding: 8px 4px; /* Reduced padding to accommodate two lines */
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* Slightly reduced font size for better fit */
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: #666;
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
-    white-space: nowrap;
+    /* Removed white-space: nowrap to allow text wrapping */
     min-width: 0;
+    line-height: 1.2; /* Added line-height for better multi-line spacing */
+    word-break: break-word; /* Allow breaking long words if necessary */
+    hyphens: auto; /* Enable hyphenation for better text wrapping */
 }
 
 .mobile-nav-tab.active {
@@ -515,8 +522,8 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     
     /* Adjust container to account for mobile nav */
     .container {
-        margin-top: 50px; /* Space for mobile nav bar */
-        height: calc(100vh - 50px); /* Subtract nav height from viewport */
+        margin-top: 70px; /* Increased space for potentially taller mobile nav bar */
+        height: calc(100vh - 70px); /* Subtract nav height from viewport */
     }
     
     /* Show only active section on mobile */
@@ -561,18 +568,34 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
         flex-direction: column; /* Stacks children of 'custom-layout' vertically */
     }
     
-    /* Fix mobile scrolling issue - add extra bottom padding for mobile browsers */
+        /* Fix mobile scrolling issue - add extra bottom padding for mobile browsers */
     .detail-content-wrapper {
         padding-bottom: 60px; /* Increased from 10px to account for mobile browser UI */
     }
-    
+
     .project-detail-content {
         padding-bottom: 40px; /* Add bottom padding to ensure content is visible */
     }
-    
+
     /* Ensure last content section has some bottom margin on mobile */
     .detail-content-wrapper .content-section:last-child {
         margin-bottom: 30px; /* Restore bottom margin on mobile for better spacing */
+    }
+}
+
+/* Additional responsive adjustments for very narrow screens */
+@media (max-width: 480px) {
+    /* Further optimize mobile nav for very narrow screens */
+    .mobile-nav-tab {
+        font-size: 0.7rem; /* Even smaller font for very narrow screens */
+        padding: 6px 2px; /* Reduce padding further */
+        letter-spacing: 0.3px; /* Reduce letter spacing for better fit */
+    }
+    
+    /* Ensure container accounts for mobile nav on very narrow screens */
+    .container {
+        margin-top: 70px; /* Keep same margin as regular mobile */
+        height: calc(100vh - 70px);
     }
 }
 
