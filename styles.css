@@ -586,6 +586,14 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     .section-content {
         padding-bottom: 60px; /* Extra bottom padding for mobile touchscreen home page sections */
     }
+
+    /* Ensure ul bullets are positioned within content area on mobile */
+    .detail-content-wrapper ul,
+    .project-detail-content ul {
+        list-style-position: inside; /* Position bullets inside the content area */
+        padding-left: 0; /* Remove default left padding since bullets are inside */
+        margin-left: 0; /* Remove default left margin */
+    }
 }
 
 /* Additional responsive adjustments for very narrow screens */
