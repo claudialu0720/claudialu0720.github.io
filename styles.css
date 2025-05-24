@@ -542,6 +542,7 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     .project-brief, /* Selects elements with class 'project-brief' */
     .content-section.columns { /* Selects elements with both 'content-section' and 'columns' classes */
         flex-direction: column; /* Stacks children of these elements vertically */
+        padding-left: 15px;
     }
     
     .brief-col, /* Selects elements with class 'brief-col' */
@@ -585,14 +586,6 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     /* Add bottom padding for home page sections on mobile touchscreen devices */
     .section-content {
         padding-bottom: 60px; /* Extra bottom padding for mobile touchscreen home page sections */
-    }
-
-    /* Ensure ul bullets are positioned within content area on mobile */
-    .detail-content-wrapper ul,
-    .project-detail-content ul {
-        list-style-position: inside; /* Position bullets inside the content area */
-        padding-left: 0; /* Remove default left padding since bullets are inside */
-        margin-left: 0; /* Remove default left margin */
     }
 }
 
