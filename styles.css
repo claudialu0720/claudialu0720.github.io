@@ -14,9 +14,9 @@ html, body { /* Selects the html and body elements */
 }
 
 body { /* Selects the body element */
-    font-family: 'Albert Sans', sans-serif; /* Sets the default font for the page to 'Albert Sans', with a generic sans-serif fallback */
+    font-family: 'Helvetica', Arial, sans-serif; /* Sets the default font for the page to 'Helvetica', with Arial and generic sans-serif fallbacks */
     color: #333; /* Sets the default text color to a dark gray */
-    line-height: 1.4; /* Sets the default line height for text, providing spacing between lines */
+    line-height: 1.1; /* Sets the default line height for text, providing spacing between lines */
     background-color: #fff; /* Sets the default background color of the page to white */
 }
 
@@ -141,7 +141,7 @@ ol li {
 
 /* Project Items (from project-preview HTML) */
 .project-item { /* Selects elements with the class 'project-item' */
-    margin-bottom: 30px; /* Adds a 30-pixel margin below the element */
+    margin-bottom: 10px; /* Adds a 30-pixel margin below the element */
     border-bottom: 1px solid #e0e0e0; /* Changed to a slightly darker gray for more visual separation */
     padding-bottom: 15px; /* Adds 15 pixels of padding to the bottom of the element */
 }
@@ -213,6 +213,9 @@ ol li {
 /* Style for the "[More...]" link in project briefs */
 .project-more-link {
     cursor: pointer; /* Changes the mouse cursor to a pointer (hand) on hover */
+    margin-top: 20px; /* Add 20px space above the [More...] link */
+    margin-bottom: 40px; /* Add 40px space below the [More...] link */
+    display: block; /* Make it a block element so margins apply properly */
     /* Optional: Add a distinct color if not inheriting the desired one */
     /* color: #007bff; */ 
 }
@@ -271,7 +274,7 @@ ol li {
     color: #666; /* Sets the text color to a medium gray */
     font-weight: 400; /* Restored for text button: Sets font weight to 400 (normal) */
     padding: 0 0 0 10px; /* Padding for spacing from title: 0 top/right/bottom, 10px left */
-    font-family: 'Albert Sans', sans-serif; /* Ensure it uses the primary font: Sets font to 'Albert Sans' */
+    font-family: 'Helvetica', Arial, sans-serif; /* Ensure it uses the primary font: Sets font to 'Helvetica' */
     z-index: 6; /* Sets the stack order */
     transition: color 0.2s ease; /* Adds a smooth transition to the color property over 0.2 seconds */
     line-height: normal; /* Default line height for text: Allows browser to determine line height */
@@ -635,6 +638,13 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
 
     .detail-content-wrapper .content-section:last-child {
         margin-bottom: 40px; /* Extra margin for tablet browser UI considerations */
+    }
+}
+
+/* Desktop font size reduction - 20% smaller font for better desktop readability */
+@media (min-width: 1025px) {
+    html {
+        font-size: 80%; /* Reduce base font size by 20% for desktop view */
     }
 }
 
