@@ -14,7 +14,7 @@ html, body { /* Selects the html and body elements */
 }
 
 body { /* Selects the body element */
-    font-family: 'Helvetica Light', 'Helvetica', Arial, sans-serif; /* Sets the default font for the page to 'Helvetica Light', with Helvetica and Arial fallbacks */
+    font-family: 'Albert Sans', sans-serif; /* Sets the default font for the page to 'Albert Sans', with a generic sans-serif fallback */
     line-height: 1.2; /* Sets the default line height for text, providing spacing between lines */
     background-color: #fff; /* Sets the default background color of the page to white */
 }
@@ -278,7 +278,7 @@ ol li {
     color: #666; /* Sets the text color to a medium gray */
     font-weight: 400; /* Restored for text button: Sets font weight to 400 (normal) */
     padding: 0 0 0 10px; /* Padding for spacing from title: 0 top/right/bottom, 10px left */
-    font-family: 'Helvetica Light', 'Helvetica', Arial, sans-serif; /* Ensure it uses the primary font: Sets font to 'Helvetica Light' */
+    font-family: 'Albert Sans', sans-serif; /* Ensure it uses the primary font: Sets font to 'Albert Sans' */
     z-index: 6; /* Sets the stack order */
     transition: color 0.2s ease; /* Adds a smooth transition to the color property over 0.2 seconds */
     line-height: normal; /* Default line height for text: Allows browser to determine line height */
