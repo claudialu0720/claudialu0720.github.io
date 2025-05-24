@@ -599,6 +599,22 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     }
 }
 
+/* Desktop view bottom spacing - prevent content cutoff on tablets in desktop mode */
+@media (min-width: 1025px) {
+    .detail-content-wrapper {
+        padding-bottom: 30px; /* Add bottom padding for desktop to prevent content cutoff */
+    }
+
+    .project-detail-content {
+        padding-bottom: 20px; /* Add bottom padding to ensure content is visible on desktop */
+    }
+
+    /* Ensure last content section has adequate bottom margin on desktop */
+    .detail-content-wrapper .content-section:last-child {
+        margin-bottom: 20px; /* Add bottom margin for better spacing on desktop */
+    }
+}
+
 /* Active States */
 .project-detail.active { /* Selects elements with both 'project-detail' and 'active' classes */
     display: block; /* Makes the element visible (overriding display: none) */
