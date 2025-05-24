@@ -62,6 +62,17 @@ ol li {
     margin-bottom: 0.5em; /* Adds space below each list item, relative to its font size */
 }
 
+/* Restore proper spacing for lists (removed by universal reset) */
+ul, ol {
+    padding-left: 1em; /* Provides space for bullets and numbers on the left */
+
+}
+
+/* Nested lists should have less left padding */
+ul ul, ol ol, ul ol, ol ul {
+    padding-left: 0.5em; /* Reduced padding for nested lists */
+}
+
 /* Container and Section Layout */
 .container { /* Selects elements with the class 'container' */
     display: flex; /* Enables flexbox layout for direct children of the container */
@@ -549,7 +560,6 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     .project-brief, /* Selects elements with class 'project-brief' */
     .content-section.columns { /* Selects elements with both 'content-section' and 'columns' classes */
         flex-direction: column; /* Stacks children of these elements vertically */
-        padding-left: 15px;
     }
     
     .brief-col, /* Selects elements with class 'brief-col' */
