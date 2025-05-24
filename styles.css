@@ -16,7 +16,7 @@ html, body { /* Selects the html and body elements */
 body { /* Selects the body element */
     font-family: 'Albert Sans', sans-serif; /* Sets the default font for the page to 'Albert Sans', with a generic sans-serif fallback */
     color: #333; /* Sets the default text color to a dark gray */
-    line-height: 1.6; /* Sets the default line height for text, providing spacing between lines */
+    line-height: 1.4; /* Sets the default line height for text, providing spacing between lines */
     background-color: #fff; /* Sets the default background color of the page to white */
 }
 
