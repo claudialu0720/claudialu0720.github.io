@@ -581,6 +581,11 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     .detail-content-wrapper .content-section:last-child {
         margin-bottom: 30px; /* Restore bottom margin on mobile for better spacing */
     }
+
+    /* Add bottom padding for home page sections on mobile touchscreen devices */
+    .section-content {
+        padding-bottom: 60px; /* Extra bottom padding for mobile touchscreen home page sections */
+    }
 }
 
 /* Additional responsive adjustments for very narrow screens */
@@ -599,19 +604,53 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     }
 }
 
-/* Desktop view bottom spacing - prevent content cutoff on tablets in desktop mode */
-@media (min-width: 1025px) {
+/* Desktop view bottom spacing - differentiate between actual desktop and tablets */
+
+/* True desktop computers (with mouse/trackpad) - modest bottom padding */
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
     .detail-content-wrapper {
-        padding-bottom: 30px; /* Add bottom padding for desktop to prevent content cutoff */
+        padding-bottom: 25px; /* Modest padding for true desktop computers */
     }
 
     .project-detail-content {
-        padding-bottom: 20px; /* Add bottom padding to ensure content is visible on desktop */
+        padding-bottom: 15px; /* Light padding for desktop with precise scrolling */
     }
 
-    /* Ensure last content section has adequate bottom margin on desktop */
     .detail-content-wrapper .content-section:last-child {
-        margin-bottom: 20px; /* Add bottom margin for better spacing on desktop */
+        margin-bottom: 15px; /* Adequate spacing without excessive white space */
+    }
+}
+
+/* Tablets in desktop mode (touch-based) - larger bottom padding for browser UI */
+@media (min-width: 1025px) and (hover: none), 
+       (min-width: 1025px) and (pointer: coarse) {
+    .detail-content-wrapper {
+        padding-bottom: 80px; /* Larger padding for tablets in desktop mode */
+    }
+
+    .project-detail-content {
+        padding-bottom: 50px; /* Substantial padding for touch-based navigation */
+    }
+
+    .detail-content-wrapper .content-section:last-child {
+        margin-bottom: 40px; /* Extra margin for tablet browser UI considerations */
+    }
+}
+
+/* Home page section bottom spacing - differentiate between desktop and tablets */
+
+/* True desktop computers - modest bottom padding for home page sections */
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+    .section-content {
+        padding-bottom: 25px; /* Modest bottom padding for desktop home page sections */
+    }
+}
+
+/* Tablets in desktop mode - larger bottom padding for home page sections */
+@media (min-width: 1025px) and (hover: none), 
+       (min-width: 1025px) and (pointer: coarse) {
+    .section-content {
+        padding-bottom: 100px; /* Increased bottom padding for tablets viewing home page in desktop mode */
     }
 }
 
