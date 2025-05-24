@@ -21,7 +21,7 @@ body { /* Selects the body element */
 
 /* Override inline font color attributes to enforce consistent gray color */
 font[color="black"] {
-    color: #444444 !important; /* Force override of inline black color to match body color */
+    color: #555555 !important; /* Force override of inline black color to match body color */
 }
 
 img { /* Selects all image elements */
