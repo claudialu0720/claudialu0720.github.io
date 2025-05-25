@@ -516,8 +516,9 @@ blockquote footer { /* Selects footer elements that are descendants of blockquot
     /* Removed white-space: nowrap to allow text wrapping */
     min-width: 0;
     line-height: 1.2; /* Added line-height for better multi-line spacing */
-    word-break: break-word; /* Allow breaking long words if necessary */
-    hyphens: auto; /* Enable hyphenation for better text wrapping */
+    word-break: normal; /* Only break at word boundaries, not within words */
+    hyphens: none; /* Disable hyphenation completely */
+    overflow-wrap: break-word; /* Allow breaking only if a single word is too long for the container */
 }
 
 .mobile-nav-tab.active {
