@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About Architecture Outlier - A platform for architects exploring alternate career paths.">
+    <title>About | Architecture Outlier</title>
+    
+    <!-- Google Fonts - Clean monospace typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- ============================================
+         HERO/NAVBAR SECTION
+         Starts in collapsed navbar state on About page.
+    ============================================= -->
+    <header id="hero" class="hero hero--static-navbar">
+        <div class="hero__content">
+            <!-- Logo - Small navbar size -->
+            <div class="hero__logo">
+                <a href="./">
+                    <img src="assets/AOLogo.jpg" alt="Architects Outlier" class="hero__logo-img">
+                </a>
+            </div>
+            
+            <!-- Navigation links - Visible immediately -->
+            <nav class="hero__nav">
+                <a href="./" class="hero__nav-link">Home</a>
+                <a href="about.html" class="hero__nav-link hero__nav-link--active">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================
+         ABOUT PAGE CONTENT
+         Two sections: About Me and About Project.
+    ============================================= -->
+    <main class="about-section">
+        <div class="about-container">
+            
+            <!-- About Me Section -->
+            <section class="about-block">
+                <h2 class="about-block__title">About</h2>
+                <div class="about-block__content">
+                    <p>
+                        Founded by Claudia and Yen in 2023, <b>Architecture Outlier</b> documents architects who practice beyond traditional boundaries. 
+                        To date, we have conducted over ten interviews, shared through videos, podcasts, and articles on WeChat and RED.<br><br>
+                        We see architecture as a prism: a way of understanding the world that can be refracted into countless paths.<br><br>
+                        This page serves as an evolving archive of featured work, alongside additional references and inspirations that have informed our ongoing research and exploration.<br><br>
+                        To engage with the community and access our latest content, please follow us on WeChat and RED.<br><br>
+                    </p>
+                </div>
+            </section>
+            
+            
+        </div>
+    </main>
+
+    <!-- ============================================
+         CONTACT SECTION
+         Fixed position in bottom-right corner.
+         Shows QR codes for WeChat and Red Note.
+    ============================================= -->
+    <aside id="contact" class="contact">
+        <div class="contact__panel">
+            <div class="contact__links">
+                <!-- WeChat QR Code -->
+                <div class="contact__qr-item">
+                    <span class="contact__qr-label">Wechat</span>
+                    <div class="contact__qr-code">
+                        <img src="assets/QRWechat.jpg" alt="WeChat QR Code">
+                    </div>
+                </div>
+                <!-- Red Note QR Code -->
+                <div class="contact__qr-item">
+                    <span class="contact__qr-label">Red Note</span>
+                    <div class="contact__qr-code">
+                        <img src="assets/QRRedNote.jpg" alt="Red Note QR Code">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================
+         QR CODE LIGHTBOX
+         Opens when clicking on a QR code.
+    ============================================= -->
+    <div id="qr-lightbox" class="qr-lightbox" aria-hidden="true">
+        <button class="qr-lightbox__close" aria-label="Close">&times;</button>
+        <img id="qr-lightbox-image" class="qr-lightbox__image" src="" alt="QR Code">
+    </div>
+
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,1188 @@
+/* ============================================
+   OUT OF ARCHITECTURE - MAIN STYLESHEET
+   Dark-themed website showcasing alternate 
+   career paths for architects.
+   ============================================ */
+
+/* ============================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   Defines the color palette and common values.
+   ============================================ */
+:root {
+    /* Primary Colors - Dark Theme */
+    --color-bg-primary: #000000;        /* Pure black - main background */
+    --color-bg-secondary: #141414;       /* Slightly lighter - sections */
+    --color-bg-card: #1a1a1a;            /* Card backgrounds */
+    --color-bg-card-hover: #242424;      /* Card hover state */
+    
+    /* Text Colors */
+    --color-text-primary: #ffffff;       /* White - main text */
+    --color-text-secondary: #888888;     /* Gray - secondary text */
+    --color-text-muted: #555555;         /* Muted text */
+    
+    /* Accent Color - Warm gold/bronze */
+    --color-accent: #c9a87c;             /* Warm accent */
+    --color-accent-hover: #d4b88a;       /* Lighter on hover */
+    --color-accent-dim: rgba(201, 168, 124, 0.3); /* Dimmed accent */
+    
+    /* Borders and Lines */
+    --color-border: #2a2a2a;             /* Subtle borders */
+    --color-border-light: #3a3a3a;       /* Lighter borders */
+    
+    /* Typography - Clean monospace fonts */
+    --font-display: 'Bebas Neue', 'Impact', sans-serif;  /* Bold display font */
+    --font-body: 'Roboto Mono', 'Courier New', monospace;  /* Monospace body font */
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-xxl: 5rem;
+    
+    /* Layout */
+    --navbar-height: 200px;              /* Collapsed navbar height */
+    --container-max-width: 1400px;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Shadows */
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-modal: 0 10px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* ============================================
+   CSS RESET & BASE STYLES
+   ============================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Remove default link styles */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Remove default button styles */
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+}
+
+/* Remove default list styles */
+ul, ol {
+    list-style: none;
+}
+
+/* Make images responsive */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ============================================
+   HERO SECTION - FIXED MORPHING HEADER
+   Fixed at top, morphs from full hero to
+   compact navbar on scroll. Uses transforms
+   for smooth animation without layout shifts.
+   ============================================ */
+.hero {
+    /* Fixed positioning - always at top */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    
+    /* Pure black background */
+    background: #000000;
+    
+    /* Flexbox centering */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    /* Will be set by JS - starts at 100vh */
+    height: 100vh;
+    
+    /* Bottom border (visible when collapsed) */
+    border-bottom: 2px solid transparent;
+    
+    /* Border transition only - height is controlled directly by JS without transition
+       to avoid wobble/jitter from CSS fighting with JS updates */
+    transition: border-color 0.3s ease;
+    
+    /* Prevent content overflow during shrink */
+    overflow: hidden;
+}
+
+/* Add border when hero is in collapsed state */
+.hero.is-collapsed {
+    border-bottom-color: #2a2a2a;
+}
+
+/* Spacer element - pushes content below fixed hero */
+.hero-spacer {
+    height: 100vh;
+    pointer-events: none;
+}
+
+/* ============================================
+   HERO - STATIC NAVBAR STATE
+   For pages that should skip the hero animation
+   and start directly in navbar/collapsed state.
+   ============================================ */
+.hero--static-navbar {
+    height: var(--navbar-height) !important;
+    border-bottom-color: #2a2a2a;
+}
+
+.hero--static-navbar .hero__content {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hero--static-navbar .hero__logo-img {
+    height: 160px !important;
+}
+
+.hero--static-navbar .hero__nav {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hero--static-navbar .hero__scroll-indicator {
+    display: none;
+}
+
+/* Hero content container */
+.hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: var(--container-max-width);
+    padding: 0 var(--spacing-xl);
+    position: relative;
+}
+
+/* When collapsed, switch to horizontal layout */
+.hero.is-collapsed .hero__content {
+    flex-direction: row;
+    justify-content: center;
+}
+
+/* ============================================
+   HERO LOGO
+   Large initially, shrinks to navbar size.
+   Height controlled directly by JS.
+   ============================================ */
+.hero__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hero__logo-img {
+    /* Height set directly by JS for performance */
+    /* Starting at 400px (smaller than before for smoother shrink) */
+    height: 400px;
+    width: auto;
+    max-width: 90vw;
+    object-fit: contain;
+    
+    /* Smooth transition for hover effect only - no transition on height
+       to prevent wobble when JS updates the value */
+    transition: transform 0.3s ease;
+    
+    /* Force GPU acceleration for smoother rendering */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    
+    /* Prevent layout shift during animation */
+    will-change: height, transform;
+}
+
+.hero__logo-img:hover {
+    transform: scale(1.02);
+}
+
+/* ============================================
+   HERO NAVIGATION
+   Hidden initially, fades in as hero collapses.
+   Positioned on the right in navbar state.
+   ============================================ */
+.hero__nav {
+    /* Initially hidden */
+    opacity: 0;
+    
+    /* Layout */
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+    
+    /* Positioned on the right */
+    position: absolute;
+    right: var(--spacing-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* Prevent interaction when invisible */
+    pointer-events: none;
+    
+    /* Performance optimization */
+    will-change: opacity;
+}
+
+/* Enable interaction when visible */
+.hero.is-collapsed .hero__nav {
+    pointer-events: auto;
+}
+
+/* Navigation link styling */
+.hero__nav-link {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #888888;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.hero__nav-link:hover {
+    color: var(--color-text-primary);
+}
+
+/* Active state - current page */
+.hero__nav-link--active {
+    color: #e8e8e8;
+    border-bottom-color: #e8e8e8;
+}
+
+/* ============================================
+   SCROLL INDICATOR
+   Fades out as user scrolls.
+   ============================================ */
+.hero__scroll-indicator {
+    /* Positioning at bottom of hero */
+    position: absolute;
+    bottom: var(--spacing-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    
+    /* Styling */
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    
+    /* Entrance animation */
+    animation: fadeIn 1s ease-out 0.5s both;
+    
+    /* Prevent interaction when faded */
+    pointer-events: none;
+    
+    /* Performance optimization */
+    will-change: opacity;
+}
+
+/* Hide scroll indicator when hero is collapsed */
+.hero.is-collapsed .hero__scroll-indicator {
+    display: none;
+}
+
+.hero__scroll-arrow {
+    width: 24px;
+    height: 24px;
+    border-right: 3px solid var(--color-accent);
+    border-bottom: 3px solid var(--color-accent);
+    transform: rotate(45deg);
+    animation: bounceDown 2s infinite;
+}
+
+/* ============================================
+   BODY COLOR SCHEME
+   Body stays black, grid section is grey.
+   ============================================ */
+
+/* ============================================
+   GRID SECTION - MAIN CONTENT
+   Contains the category columns.
+   ============================================ */
+.grid-section {
+    min-height: 100vh;
+    /* Add top padding to account for fixed navbar height */
+    /* navbar-height (200px) + extra spacing */
+    padding: calc(var(--navbar-height) + var(--spacing-lg)) var(--spacing-lg) var(--spacing-xxl);
+    
+    /* Grey background - revealed as hero shrinks */
+    background-color: #e8e8e8;
+    
+    /* Subtle pattern overlay on grey */
+    background-image: 
+        linear-gradient(rgba(201, 168, 124, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 168, 124, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    
+    /* Light theme colors for grid section */
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #555555;
+    --color-text-muted: #888888;
+    --color-border: #cccccc;
+    --color-border-light: #dddddd;
+    --color-bg-card: #f0f0f0;
+    --color-bg-card-hover: #e0e0e0;
+}
+
+/* Grid container for categories */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--spacing-md);
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+}
+
+/* ============================================
+   CATEGORY COLUMN
+   Vertical column containing subcategory cards.
+   All items center-aligned within the column.
+   ============================================ */
+.category-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* CENTER ALIGN all items */
+    gap: var(--spacing-sm);
+}
+
+/* Category header - Simple and clean, center-aligned */
+.category-header {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    padding: var(--spacing-sm) 0;
+    text-align: center;
+    border-bottom: 1px dashed var(--color-border);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: var(--spacing-sm);
+    transition: all 0.3s ease;
+    width: 100%;  /* Header takes full column width for border */
+}
+
+/* ============================================
+   SUBCATEGORY ITEM
+   Simple underlined text link for each career path.
+   White background for items with both video + article.
+   All items are CENTER-ALIGNED within their column.
+   ============================================ */
+.subcategory-card {
+    padding: var(--spacing-xs) 0;
+    text-align: center;  /* Center the text within the box */
+    cursor: pointer;
+    display: inline-block;  /* Only take up as much width as needed */
+    
+    /* Staggered animation on load */
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.subcategory-card__name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    display: inline;  /* Inline so it wraps naturally */
+}
+
+.subcategory-card:hover .subcategory-card__name {
+    color: var(--color-accent);
+}
+
+/* Hide indicators */
+.subcategory-card__indicators {
+    display: none;
+}
+
+.subcategory-card__indicator {
+    display: none;
+}
+
+/* ============================================
+   POPOVER / POPUP
+   Positioned next to the clicked subcategory.
+   ============================================ */
+.modal {
+    /* Hidden by default - visibility controlled by JS */
+    display: none;
+}
+
+/* Backdrop for closing popover */
+.popover-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1999;
+    background: transparent;
+    display: none;
+    /* Match cursor with subcategory cards and popover to prevent flickering.
+       The backdrop appears above the grid (due to z-index) when popover opens,
+       so without this, cursor would briefly change to default arrow. */
+    cursor: pointer;
+}
+
+.popover-backdrop.is-open {
+    display: block;
+}
+
+/* Popover container - minimal design, positioned next to item */
+.popover {
+    position: fixed;
+    z-index: 2000;
+    background-color: #ffffff;
+    border: 1px dashed #999999;
+    padding: var(--spacing-sm);
+    min-width: 120px;
+    /* Use pointer cursor to match subcategory-card - prevents cursor flickering 
+       when popover appears adjacent to the hovered item */
+    cursor: pointer;
+    
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;  /* Disable pointer events when hidden */
+    transition: 
+        opacity 0.15s ease,
+        visibility 0s linear 0.15s;
+}
+
+.popover.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;  /* Enable pointer events when visible */
+    transition-delay: 0s;
+}
+
+/* Close button - hidden, click outside to close */
+.popover__close {
+    display: none;
+}
+
+/* Popover content */
+.popover__content {
+    padding: 0;
+}
+
+/* Hide title in minimal popover */
+.popover__title {
+    display: none;
+}
+
+/* Links section - simple vertical list */
+.popover__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.popover__link {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 2px 0;
+    display: block;
+}
+
+.popover__link:hover {
+    color: #cc0000;
+}
+
+.popover__link svg {
+    display: none;
+}
+
+/* Video container - hidden in list, opens in separate modal */
+.popover__video {
+    display: none;
+}
+
+/* Empty state */
+.popover__empty {
+    color: #888888;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   POPOVER - MULTIPLE PROJECTS LAYOUT
+   Styles for displaying multiple people/projects.
+   ============================================ */
+
+/* Individual project entry */
+.popover__project {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Person name styling */
+.popover__person-name {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.popover__person-name a {
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.popover__person-name a:hover {
+    color: #cc0000;
+}
+
+/* Links container within a project */
+.popover__project-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 8px;
+}
+
+/* No links placeholder */
+.popover__no-links {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: #888888;
+    font-style: italic;
+}
+
+/* Separator between projects */
+.popover__separator {
+    border: none;
+    border-top: 1px dashed #cccccc;
+    margin: var(--spacing-xs) 0;
+}
+
+/* ============================================
+   ABOUT PAGE
+   Two-section layout for About Me and About Project.
+   ============================================ */
+.about-section {
+    min-height: 100vh;
+    /* Top padding accounts for fixed navbar + breathing room */
+    padding: calc(var(--navbar-height) + var(--spacing-lg)) var(--spacing-lg) var(--spacing-xxl);
+    
+    /* Grey background - same as grid section */
+    background-color: #e8e8e8;
+    
+    /* Subtle pattern overlay */
+    background-image: 
+        linear-gradient(rgba(201, 168, 124, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 168, 124, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    
+    /* Light theme colors */
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #555555;
+}
+
+.about-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xxl);
+}
+
+/* Individual about block (About Me / About Project) */
+.about-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.about-block__title {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px dashed var(--color-border);
+}
+
+.about-block__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.about-block__content p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text-primary);
+}
+
+/* ============================================
+   CONTACT SECTION
+   Fixed position bottom-right corner.
+   Shows QR codes for WeChat and Red Note.
+   ============================================ */
+.contact {
+    position: fixed;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-md);
+}
+
+/* Hide toggle button - show QR codes directly */
+.contact__toggle {
+    display: none;
+}
+
+.contact__icon {
+    display: none;
+}
+
+/* Contact panel - always visible, no toggle needed */
+.contact__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-md);
+}
+
+.contact__title {
+    display: none;
+}
+
+.contact__links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-md);
+}
+
+/* QR code item */
+.contact__qr-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.contact__qr-label {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.contact__qr-code {
+    width: 70px;
+    height: 70px;
+    background-color: #ffffff;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact__qr-code:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.contact__qr-code img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* QR Code Lightbox */
+.qr-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+    
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.qr-lightbox.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.qr-lightbox__image {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 400px;
+    height: 400px;
+    background-color: #ffffff;
+    padding: 20px;
+    object-fit: contain;
+}
+
+.qr-lightbox__close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 3rem;
+    color: #ffffff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.qr-lightbox__close:hover {
+    color: var(--color-accent);
+}
+
+/* ============================================
+   VIDEO MODAL
+   Full-screen video player overlay.
+   ============================================ */
+.video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    
+    /* Hidden by default */
+    visibility: hidden;
+    opacity: 0;
+    transition: 
+        visibility 0s linear 0.3s,
+        opacity 0.3s ease;
+}
+
+.video-modal.is-open {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.video-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.video-modal__container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+}
+
+.video-modal__close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ffffff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.video-modal__close:hover {
+    color: var(--color-accent);
+}
+
+.video-modal__content iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: none;
+}
+
+/* ============================================
+   ANIMATIONS
+   Keyframe animations used throughout.
+   ============================================ */
+
+/* Fade in from bottom */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Simple fade in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Bounce down animation for scroll arrow */
+@keyframes bounceDown {
+    0%, 20%, 50%, 80%, 100% {
+        transform: rotate(45deg) translateY(0);
+    }
+    40% {
+        transform: rotate(45deg) translateY(8px);
+    }
+    60% {
+        transform: rotate(45deg) translateY(4px);
+    }
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   Comprehensive breakpoints for all devices.
+   ============================================ */
+
+/* Large desktop (1400px+) */
+@media (min-width: 1400px) {
+    .categories-grid {
+        gap: var(--spacing-lg);
+    }
+    
+    .subcategory-card {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+}
+
+/* Desktop to tablet transition (1200px) */
+@media (max-width: 1200px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .category-header {
+        font-size: 1rem;
+        padding: var(--spacing-xs);
+    }
+}
+
+/* Tablet (1024px) */
+@media (max-width: 1024px) {
+    :root {
+        --navbar-height: 170px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .hero__nav-link {
+        font-size: 0.8rem;
+    }
+    
+    .grid-section {
+        padding: calc(var(--navbar-height) + var(--spacing-md)) var(--spacing-md) var(--spacing-xxl);
+    }
+}
+
+/* Tablet portrait (768px) */
+@media (max-width: 768px) {
+    :root {
+        --navbar-height: 150px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .hero {
+        padding: var(--spacing-lg);
+    }
+    
+    .hero__content {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .hero__nav {
+        right: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+    
+    .hero__nav-link {
+        font-size: 0.75rem;
+    }
+    
+    .hero__scroll-indicator {
+        font-size: 0.75rem;
+    }
+    
+    /* Popover adjustments for tablet */
+    .popover {
+        min-width: 100px;
+    }
+    
+    /* Contact section adjustments */
+    .contact__panel {
+        width: 260px;
+    }
+}
+
+/* Mobile landscape (640px) */
+@media (max-width: 640px) {
+    :root {
+        --navbar-height: 120px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .category-header {
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+    }
+    
+    .subcategory-card__name {
+        font-size: 0.9rem;
+    }
+    
+    /* Smaller nav on mobile */
+    .hero__nav {
+        gap: var(--spacing-sm);
+    }
+    
+    .hero__nav-link {
+        font-size: 0.7rem;
+        letter-spacing: 0.05em;
+    }
+}
+
+/* Mobile portrait (480px) */
+@media (max-width: 480px) {
+    :root {
+        --navbar-height: 100px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .hero {
+        padding: var(--spacing-md);
+    }
+    
+    .hero__content {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    /* Contact button - smaller and tucked away */
+    .contact {
+        bottom: var(--spacing-sm);
+        right: var(--spacing-sm);
+    }
+    
+    .contact__panel {
+        width: calc(100vw - var(--spacing-lg));
+        right: calc(-1 * var(--spacing-sm));
+    }
+    
+    /* Popover on mobile */
+    .popover {
+        min-width: 90px;
+    }
+    
+    .popover__link {
+        font-size: 0.8rem;
+    }
+    
+    /* Grid section padding - accounts for navbar */
+    .grid-section {
+        padding: calc(var(--navbar-height) + var(--spacing-md)) var(--spacing-sm) var(--spacing-xxl);
+    }
+    
+    /* Category header smaller on mobile */
+    .category-header {
+        font-size: 1.1rem;
+        letter-spacing: 0.15em;
+    }
+}
+
+/* Extra small mobile (360px) */
+@media (max-width: 360px) {
+    :root {
+        --navbar-height: 80px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-column {
+        /* Stack categories vertically on tiny screens */
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: var(--spacing-md);
+    }
+    
+    .category-column:last-child {
+        border-bottom: none;
+    }
+    
+    /* Contact QR codes smaller on tiny screens */
+    .contact__qr-code {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .contact__qr-label {
+        font-size: 0.75rem;
+    }
+    
+    .qr-lightbox__image {
+        width: 280px;
+        height: 280px;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   Respects user preference for reduced motion.
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   Improves visibility for users with high contrast.
+   ============================================ */
+@media (prefers-contrast: high) {
+    :root {
+        --color-border: #444444;
+        --color-border-light: #555555;
+        --color-text-secondary: #aaaaaa;
+    }
+    
+    .subcategory-card {
+        border-width: 2px;
+    }
+    
+    .modal__container {
+        border-width: 2px;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   Helper classes for common patterns.
+   ============================================ */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
