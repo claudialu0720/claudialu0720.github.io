@@ -977,7 +977,7 @@ img {
 /* Tablet portrait (768px) */
 @media (max-width: 768px) {
     :root {
-        --navbar-height: 220px;
+        --navbar-height: 150px;
     }
     
     .categories-grid {
@@ -987,48 +987,32 @@ img {
     
     .hero {
         padding: var(--spacing-md);
-        /* Allow content to determine height on mobile */
-        min-height: var(--navbar-height);
         /* Override overflow:hidden to prevent logo cutoff in Chrome */
         overflow: visible !important;
     }
     
-    /* Stack logo and nav vertically on tablet/mobile */
     .hero__content {
         padding: 0 var(--spacing-md);
-        flex-direction: column !important;
-        gap: var(--spacing-sm);
-        align-items: center;
     }
     
-    /* Override row layout for collapsed and static navbar states */
-    .hero.is-collapsed .hero__content,
-    .hero--static-navbar .hero__content {
-        flex-direction: column !important;
-        align-items: center;
-    }
-    
-    /* Make logo smaller on mobile */
+    /* Logo uses most of navbar height */
     .hero__logo-img {
-        height: 120px !important;
-        max-height: 120px !important;
+        height: 130px !important;
+        max-height: 130px !important;
     }
     
-    /* Nav below logo on tablet/mobile - MUST override base styles */
+    /* Stack nav links vertically (Home on top, About below) */
     .hero__nav,
     .hero.is-collapsed .hero__nav,
     .hero--static-navbar .hero__nav {
-        position: static !important;
-        transform: none !important;
-        right: auto !important;
-        top: auto !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        gap: var(--spacing-lg);
+        flex-direction: column;
+        align-items: flex-end;
+        gap: var(--spacing-xs);
+        right: var(--spacing-md);
     }
     
     .hero__nav-link {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
     
     .hero__scroll-indicator {
@@ -1058,7 +1042,7 @@ img {
 /* Mobile landscape (640px) */
 @media (max-width: 640px) {
     :root {
-        --navbar-height: 200px;
+        --navbar-height: 130px;
     }
     
     .categories-grid {
@@ -1074,7 +1058,7 @@ img {
         font-size: 0.9rem;
     }
     
-    /* Logo size for this breakpoint */
+    /* Logo uses most of navbar height */
     .hero__logo-img {
         height: 110px !important;
         max-height: 110px !important;
@@ -1089,7 +1073,7 @@ img {
 /* Mobile portrait (480px) */
 @media (max-width: 480px) {
     :root {
-        --navbar-height: 180px;
+        --navbar-height: 110px;
     }
     
     .categories-grid {
@@ -1100,14 +1084,18 @@ img {
         padding: var(--spacing-sm);
     }
     
-    /* Smaller logo on mobile */
+    /* Logo uses most of navbar height */
     .hero__logo-img {
-        height: 100px !important;
-        max-height: 100px !important;
+        height: 90px !important;
+        max-height: 90px !important;
+    }
+    
+    .hero__nav {
+        right: var(--spacing-sm);
     }
     
     .hero__nav-link {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
     
     /* Contact button - smaller and tucked away */
@@ -1150,7 +1138,7 @@ img {
 /* Extra small mobile (360px) */
 @media (max-width: 360px) {
     :root {
-        --navbar-height: 160px;
+        --navbar-height: 100px;
     }
     
     .categories-grid {
@@ -1167,14 +1155,14 @@ img {
         border-bottom: none;
     }
     
-    /* Even smaller logo on tiny screens */
+    /* Logo uses most of navbar height */
     .hero__logo-img {
         height: 80px !important;
         max-height: 80px !important;
     }
     
     .hero__nav-link {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
     }
     
     /* Contact QR codes smaller on tiny screens */

@@ -26,9 +26,24 @@ const HERO_CONFIG = {
     heroHeight: window.innerHeight,  // 100vh
     logoHeightStart: 400,            // Smaller starting logo (less shrink = smoother)
     
-    // Ending values (navbar state)
-    navbarHeight: 200,               // Collapsed navbar height
-    logoHeightEnd: 160,              // Small logo in navbar
+    // Ending values (navbar state) - responsive based on screen width
+    get navbarHeight() {
+        const width = window.innerWidth;
+        if (width <= 360) return 100;
+        if (width <= 480) return 110;
+        if (width <= 640) return 130;
+        if (width <= 768) return 150;
+        return 200;  // Desktop default
+    },
+    
+    get logoHeightEnd() {
+        const width = window.innerWidth;
+        if (width <= 360) return 80;
+        if (width <= 480) return 90;
+        if (width <= 640) return 110;
+        if (width <= 768) return 130;
+        return 160;  // Desktop default
+    },
     
     // Animation scroll distance
     get scrollDistance() {
@@ -178,6 +193,13 @@ function handleHeroScroll() {
         isCollapsed = shouldBeCollapsed;
         if (isCollapsed) {
             elements.hero.classList.add('is-collapsed');
+            // Add static navbar class and clear inline styles so CSS takes over
+            // This ensures responsive styles work correctly on mobile/tablet
+            elements.hero.classList.add('hero--static-navbar');
+            elements.hero.style.height = '';
+            if (elements.heroLogoImg) {
+                elements.heroLogoImg.style.height = '';
+            }
             // Remember that user has seen the hero animation
             // So subsequent page loads skip directly to navbar state
             try {
@@ -187,6 +209,7 @@ function handleHeroScroll() {
             }
         } else {
             elements.hero.classList.remove('is-collapsed');
+            elements.hero.classList.remove('hero--static-navbar');
         }
     }
 }
