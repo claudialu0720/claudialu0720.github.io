@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K75LH8SSVJ"></script>
+    <script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-K75LH8SSVJ'); </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Project Manager</title>
     <style>
@@ -13,34 +17,43 @@
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
         }
+
         .form-section {
             background-color: #f5f5f5;
             padding: 20px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="text"], textarea, select {
+
+        input[type="text"],
+        textarea,
+        select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
         }
+
         textarea {
             height: 100px;
         }
+
         button {
             background-color: #333;
             color: white;
@@ -50,9 +63,11 @@
             cursor: pointer;
             font-size: 14px;
         }
+
         button:hover {
             background-color: #555;
         }
+
         .content-sections {
             border: 1px solid #ddd;
             padding: 15px;
@@ -60,30 +75,37 @@
             border-radius: 4px;
             background-color: white;
         }
+
         .content-section-controls {
             display: flex;
             justify-content: flex-end;
             margin-top: 10px;
         }
+
         .button-secondary {
             background-color: #777;
             margin-right: 5px;
         }
+
         .button-danger {
             background-color: #d9534f;
         }
+
         .section-type-selector {
             margin-bottom: 15px;
         }
+
         .output-container {
             background-color: #f5f5f5;
             padding: 20px;
             border-radius: 5px;
             margin-top: 30px;
         }
+
         .output-container h2 {
             margin-top: 0;
         }
+
         #outputCode {
             background-color: #333;
             color: #f5f5f5;
@@ -93,15 +115,18 @@
             white-space: pre;
             font-family: monospace;
         }
+
         .copy-button {
             margin-top: 10px;
         }
+
         .image-gallery-inputs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 10px;
             margin-top: 10px;
         }
+
         .column-inputs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -110,12 +135,13 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Portfolio Project Manager</h1>
-    
+
     <div class="form-section">
         <h2>Project Basic Information</h2>
-        
+
         <div class="form-group">
             <label for="sectionSelect">Portfolio Section:</label>
             <select id="sectionSelect">
@@ -124,53 +150,53 @@
                 <option value="public">Public</option>
             </select>
         </div>
-        
+
         <div class="form-group">
             <label for="projectId">Project ID (unique):</label>
             <input type="text" id="projectId" placeholder="e.g., project7">
         </div>
-        
+
         <div class="form-group">
             <label for="projectTitle">Project Title:</label>
             <input type="text" id="projectTitle" placeholder="e.g., Mountain Retreat">
         </div>
-        
+
         <div class="form-group">
             <label for="projectLocation">Location:</label>
             <input type="text" id="projectLocation" placeholder="e.g., Aspen, CO">
         </div>
-        
+
         <div class="form-group">
             <label for="projectYear">Year:</label>
             <input type="text" id="projectYear" placeholder="e.g., 2023">
         </div>
-        
+
         <div class="form-group">
             <label for="thumbnailUrl">Thumbnail Image URL:</label>
             <input type="text" id="thumbnailUrl" placeholder="URL or path to main project image">
         </div>
-        
+
         <div class="form-group">
             <label for="projectBrief">Brief Description:</label>
             <textarea id="projectBrief" placeholder="Short description for project listing"></textarea>
         </div>
     </div>
-    
+
     <div class="form-section">
         <h2>Full Project Content</h2>
-        
+
         <div class="form-group">
             <label for="mainImageUrl">Main Detail Image URL:</label>
             <input type="text" id="mainImageUrl" placeholder="URL or path to main image in the full detail view">
         </div>
-        
+
         <h3>Content Sections</h3>
         <p>Add different types of content sections below:</p>
-        
+
         <div id="contentSections">
             <!-- Content sections will be added here -->
         </div>
-        
+
         <div class="section-type-selector">
             <label>Add Content Section:</label>
             <button id="addColumnsBtn">Add Two-Column Text</button>
@@ -178,16 +204,16 @@
             <button id="addFullWidthBtn">Add Full-Width Text</button>
         </div>
     </div>
-    
+
     <button id="generateBtn">Generate Project Code</button>
-    
+
     <div class="output-container" style="display: none;">
         <h2>Generated Code</h2>
         <p>Copy and paste this code into your data.js file:</p>
         <pre id="outputCode"></pre>
         <button id="copyBtn" class="copy-button">Copy to Clipboard</button>
     </div>
-    
+
     <!-- Templates for dynamic form elements -->
     <template id="columnsTemplate">
         <div class="content-sections" data-type="columns">
@@ -211,7 +237,7 @@
             </div>
         </div>
     </template>
-    
+
     <template id="galleryTemplate">
         <div class="content-sections" data-type="gallery">
             <h4>Image Gallery (2x2 Grid)</h4>
@@ -246,7 +272,7 @@
             </div>
         </div>
     </template>
-    
+
     <template id="fullWidthTemplate">
         <div class="content-sections" data-type="fullWidth">
             <h4>Full-Width Text Section</h4>
@@ -263,7 +289,7 @@
             </div>
         </div>
     </template>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Elements
@@ -275,31 +301,31 @@
             const outputContainer = document.querySelector('.output-container');
             const outputCode = document.getElementById('outputCode');
             const copyBtn = document.getElementById('copyBtn');
-            
+
             // Templates
             const columnsTemplate = document.getElementById('columnsTemplate');
             const galleryTemplate = document.getElementById('galleryTemplate');
             const fullWidthTemplate = document.getElementById('fullWidthTemplate');
-            
+
             // Add event listeners for adding content sections
             addColumnsBtn.addEventListener('click', () => {
                 const columnsSection = columnsTemplate.content.cloneNode(true);
                 contentSections.appendChild(columnsSection);
                 addRemoveSectionListeners();
             });
-            
+
             addGalleryBtn.addEventListener('click', () => {
                 const gallerySection = galleryTemplate.content.cloneNode(true);
                 contentSections.appendChild(gallerySection);
                 addRemoveSectionListeners();
             });
-            
+
             addFullWidthBtn.addEventListener('click', () => {
                 const fullWidthSection = fullWidthTemplate.content.cloneNode(true);
                 contentSections.appendChild(fullWidthSection);
                 addRemoveSectionListeners();
             });
-            
+
             // Add remove section listeners
             function addRemoveSectionListeners() {
                 const removeButtons = document.querySelectorAll('.remove-section');
@@ -310,7 +336,7 @@
                     });
                 });
             }
-            
+
             // Generate code
             generateBtn.addEventListener('click', () => {
                 // Get basic project info
@@ -322,31 +348,31 @@
                 const thumbnailUrl = document.getElementById('thumbnailUrl').value;
                 const projectBrief = document.getElementById('projectBrief').value;
                 const mainImageUrl = document.getElementById('mainImageUrl').value;
-                
+
                 // Validate required fields
                 if (!projectId || !projectTitle || !projectLocation || !projectYear || !thumbnailUrl || !projectBrief) {
                     alert('Please fill in all the basic project information fields');
                     return;
                 }
-                
+
                 // Generate content sections
                 const contentSectionElements = document.querySelectorAll('.content-sections');
                 const textSections = [];
-                
+
                 contentSectionElements.forEach(section => {
                     const type = section.dataset.type;
-                    
+
                     if (type === 'columns') {
                         const col1Title = section.querySelector('.col1-title').value;
                         const col1Content = section.querySelector('.col1-content').value;
                         const col2Title = section.querySelector('.col2-title').value;
                         const col2Content = section.querySelector('.col2-content').value;
-                        
+
                         if (!col1Title || !col1Content || !col2Title || !col2Content) {
                             alert('Please fill in all fields for the two-column section');
                             return;
                         }
-                        
+
                         textSections.push({
                             type: 'columns',
                             columns: [
@@ -360,11 +386,11 @@
                                 }
                             ]
                         });
-                    } 
+                    }
                     else if (type === 'gallery') {
                         const urls = Array.from(section.querySelectorAll('.gallery-image-url')).map(el => el.value);
                         const alts = Array.from(section.querySelectorAll('.gallery-image-alt')).map(el => el.value);
-                        
+
                         const images = [];
                         for (let i = 0; i < 4; i++) {
                             if (!urls[i] || !alts[i]) {
@@ -376,7 +402,7 @@
                                 alt: alts[i]
                             });
                         }
-                        
+
                         textSections.push({
                             type: 'gallery',
                             images
@@ -385,12 +411,12 @@
                     else if (type === 'fullWidth') {
                         const title = section.querySelector('.fullwidth-title').value;
                         const content = section.querySelector('.fullwidth-content').value;
-                        
+
                         if (!title || !content) {
                             alert('Please fill in all fields for the full-width section');
                             return;
                         }
-                        
+
                         textSections.push({
                             type: 'fullWidth',
                             title,
@@ -398,7 +424,7 @@
                         });
                     }
                 });
-                
+
                 // Create project object
                 const project = {
                     id: projectId,
@@ -412,16 +438,16 @@
                         textSections
                     }
                 };
-                
+
                 // Generate code
                 const code = generateProjectCode(project);
                 outputCode.textContent = code;
                 outputContainer.style.display = 'block';
-                
+
                 // Scroll to output
                 outputContainer.scrollIntoView({ behavior: 'smooth' });
             });
-            
+
             // Generate code for project
             function generateProjectCode(project) {
                 // Format the project as JavaScript
@@ -440,7 +466,7 @@ ${formatTextSections(project.fullContent.textSections)}
     }
 }`;
             }
-            
+
             // Format text sections
             function formatTextSections(sections) {
                 return sections.map(section => {
@@ -491,7 +517,7 @@ ${formatTextSections(project.fullContent.textSections)}
                     }
                 }).join(',\n');
             }
-            
+
             // Copy to clipboard
             copyBtn.addEventListener('click', () => {
                 const textToCopy = outputCode.textContent;
@@ -507,4 +533,5 @@ ${formatTextSections(project.fullContent.textSections)}
         });
     </script>
 </body>
-</html> 
+
+</html>
