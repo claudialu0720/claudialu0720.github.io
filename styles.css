@@ -135,6 +135,12 @@ ul ul, ol ol, ul ol, ol ul {
     display: none; /* Hides the scrollbar */
 }
 
+@media (min-width: 1025px) {
+    .portfolio-section:last-child .section-content {
+        padding-right: 48px;
+    }
+}
+
 /* Section Title */
 .section-title { /* Selects elements with the class 'section-title' */
     font-weight: 300; /* Sets the font weight to 300 (light) */
